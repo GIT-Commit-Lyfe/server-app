@@ -13,6 +13,7 @@
     "jade": "~1.11.0",
     "morgan": "~1.9.1",
     "pino": "^6.11.3",
-    "pino-pretty": "^5.0.2"
+    "pino-pretty": "^5.0.2",
+    "sequelize": "^6.6.2"
   }
 }
