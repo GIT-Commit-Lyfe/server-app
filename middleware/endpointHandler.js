@@ -1,4 +1,3 @@
-// const endpointMap = require("../modules/test/endpointMap");
 const endpointMap = require("../modules")
 const log = require("../utils/log");
 
