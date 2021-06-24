@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const endpointHandler = require("../middleware/dummyEndpointHandler");
+const endpointHandlerGenerator = require("../middleware/endpointHandler");
+const endpointHandler = endpointHandlerGenerator({ dummy: true });
 
 router.get('/', apiDefaultHandler);
 router.post('/', apiDefaultHandler);
