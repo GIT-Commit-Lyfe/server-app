@@ -1,6 +1,5 @@
 const endpointMap = require("../modules/dummy/endpointMap")
 const log = require("../utils/log");
-const fs = require('fs')
 
 module.exports = (req, res, next) => {
   const { routePath } = req.params;
