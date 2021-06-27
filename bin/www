@@ -89,5 +89,10 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   // debug('Listening on ' + bind);
+  log.info("Starting server...");
   log.info("Listening on " + bind);
+  
+  // server initiation;
+  require (__dirname + "/../initializer/index");
+
 }

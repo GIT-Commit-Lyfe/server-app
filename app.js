@@ -11,8 +11,6 @@ var dummyRouter = require('./routes/dummy')
 
 var app = express();
 
-require ("./initializer/index");
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
