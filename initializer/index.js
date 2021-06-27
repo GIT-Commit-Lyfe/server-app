@@ -9,8 +9,11 @@ const sequelize = require(__dirname + "/sequelize");
 const migration = require(__dirname + "/migration");
 
 async function init() {
-  await sequelize(sequelizeInstance);
-  await migration(sequelizeInstance, Sequelize);
+  const DUMMYMODE = process.env.DUMMYMODE;
+  if (!DUMMYMODE) {
+    await sequelize(sequelizeInstance);
+    await migration(sequelizeInstance, Sequelize);
+  }
   log.info("Server initiation done!");
 }
 
