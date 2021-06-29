@@ -89,7 +89,7 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   // debug('Listening on ' + bind);
-  log.info("Starting server...");
+  log.info("Initializing server...");
   log.info("Listening on " + bind);
   
   // server initiation;

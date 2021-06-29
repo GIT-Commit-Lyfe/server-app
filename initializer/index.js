@@ -9,7 +9,7 @@ async function init() {
     await sequelize();
     await migration();
   }
-  log.info("Server initiation done!");
+  log.info("Server initialized successfully!");
 }
 
 init();
