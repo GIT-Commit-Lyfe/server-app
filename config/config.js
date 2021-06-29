@@ -6,7 +6,11 @@ const config = {
   database: PGDB,
   host: PGHOST,
   port: PGPORT,
-  dialect: "postgres"
+  dialect: "postgres",
+  dialectOptions: {
+    encrypt: true,
+    requestTimeout: 120000,
+  }
 }
 
 module.exports = {

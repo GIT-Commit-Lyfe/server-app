@@ -10,7 +10,7 @@ const migration = require(__dirname + "/migration");
 
 async function init() {
   const DUMMYMODE = process.env.DUMMYMODE;
-  if (!DUMMYMODE) {
+  if (DUMMYMODE != "1") {
     await sequelize(sequelizeInstance);
     await migration(sequelizeInstance, Sequelize);
   }
