@@ -1,6 +1,7 @@
+const { sequelize } = require(__dirname + "/../db/sequelize");
 const log = require(__dirname + "/../utils/log");
 
-module.exports = async (sequelize) => {
+module.exports = async () => {
   log.info("Authenticating to database...");
   try {
     const errors = await sequelize.authenticate();

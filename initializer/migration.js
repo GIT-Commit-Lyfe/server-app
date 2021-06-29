@@ -1,9 +1,10 @@
 const fs = require('fs');
 const path = require('path');
+const { sequelize, Sequelize } = require(__dirname + "/../db/sequelize");
 const log = require(__dirname + "/../utils/log");
 const asyncForEach = require(__dirname + "/../utils/asyncForEach");
 
-module.exports = async (sequelize, Sequelize) => {
+module.exports = async () => {
   log.info("Processing migration files...");
   const migrationsPath = __dirname + "/../migrations";
   
