@@ -1,3 +1,13 @@
+/**
+ * @summary
+ * Menghitung lokasi terdekat antara titik A dan array B
+ * 
+ * @param { Object } targetLocation => { latitude, longitude }
+ * @param { Array } locationData => [ { latitude, longitude }, { latitude, longitude }, ...]
+ * 
+ * @returns { Object } => { latitude, longitude }
+ */
+
 function closestLocation(targetLocation, locationData) {
   function vectorDistance(dx, dy) {
     return Math.sqrt(dx * dx + dy * dy)
