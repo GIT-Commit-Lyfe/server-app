@@ -6,7 +6,7 @@ let endpointMap = {};
 fs
   .readdirSync(__dirname)
   .filter(dir => {
-    return (dir.indexOf('.') !== 0) && (dir !== basename) && (dir !== "dummy");
+    return (dir.indexOf('.') !== 0) && (dir !== basename) && (dir !== "dummy") && (dir !== "auth");
   })
   .forEach(dir => {
     const dirEndpointMap = require(path.join(__dirname, dir, "endpointMap.js"));
