@@ -6,7 +6,7 @@ const cmsAuthorize = (req, res, next) => {
   if (!accessToken) {
     const message = "token not found";
     log.warn(message);
-    res.status(401).json({ error: "Unauthorized", message });
+    res.status(401).json({ message });
     return;
   }
 
@@ -17,7 +17,7 @@ const cmsAuthorize = (req, res, next) => {
   if (!bearerToken || !tokenAuthorized) {
     const message = "invalid token";
     log.warn(message);
-    res.status(401).json({ error: "Unauthorized", message });
+    res.status(401).json({ message });
     return;
   }
 
