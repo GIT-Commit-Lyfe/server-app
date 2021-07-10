@@ -1,7 +1,22 @@
 const log = require("../utils/log");
 
-module.exports = (options = { dummy: false }) => {
-  const endpointMap = !options.dummy ? require("../modules") : require("../modules/dummy/endpointMap");
+module.exports = (options = { mode: "api" }) => {
+  let endpointMap;
+  switch (options.mode) {
+    case "api":
+      endpointMap = require("../modules");
+      break;
+    case "auth":
+      endpointMap = require("../modules/auth/endpointMap");
+      break;
+    case "dummy":
+      endpointMap = require("../modules/dummy/endpointMap");
+      break;
+    default:
+      endpointMap = {};
+      break;
+  }
+
   return (req, res, next) => {
     const { routePath } = req.params;
     const handlers = endpointMap[routePath];
