@@ -15,8 +15,8 @@ module.exports = (sequelize, DataTypes) => {
       Transaction.hasMany(models.TransactionRating, { foreignKey: 'TransactionId' })
 
       Transaction.belongsTo(models.TransactionStatus, { foreignKey: 'StatusId' })
-      // Transaction.belongsTo(models.Product, { foreignKey: 'sellerProductId' })
-      // Transaction.belongsTo(models.Product, { foreignKey: 'buyerProductId' })
+      Transaction.belongsTo(models.Product, { foreignKey: 'sellerProductId' })
+      Transaction.belongsTo(models.Product, { foreignKey: 'buyerProductId' })
     }
   };
   Transaction.init({

@@ -12,11 +12,13 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       TransactionInfo.belongsTo(models.Transaction, { foreignKey: 'TransactionId' })
+      TransactionInfo.belongsTo(models.TransactionStatus, { foreignKey: 'StatusId' })
     }
   };
   TransactionInfo.init({
     description: DataTypes.STRING,
-    TransactionId: DataTypes.INTEGER
+    TransactionId: DataTypes.INTEGER,
+    StatusId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'TransactionInfo',
