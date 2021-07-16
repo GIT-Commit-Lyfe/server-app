@@ -207,4 +207,25 @@ module.exports = {
       }
     }
   ],
+  "verify-token": [
+    verifyingToken,
+    (req, res, next) => {
+      if (req.method !== "GET") {
+        const message = "[verify-token]:invalid method";
+        log.warn(message);
+        res.status(405).json({ message });
+        return;
+      }
+
+      if (!req.user) {
+        const message = "[verify-token]:empty user info";
+        log.warn(message);
+        res.status(405).json({ message });
+        return;
+      }
+
+      const payload = Object.assign({}, req.user);
+      res.send(200).json({ payload });
+    }
+  ],
 }

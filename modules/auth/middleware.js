@@ -1,6 +1,6 @@
 const _ = require("lodash");
 const log = require("../../utils/log");
-const { verifyToken, generateToken } = require("./helpers");
+const { verifyToken } = require("./helpers");
 
 const cmsAuthorize = (req, res, next) => {
   const accessToken = _.get(req, "headers.authorization", "");
