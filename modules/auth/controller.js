@@ -61,9 +61,9 @@ async function signUpUser(email, password) {
     StatusId: 1,
   }
   const newUser = await User.create({
+    ...defaultPayload,
     email,
     password,
-    ...defaultPayload,
   })
 
   return newUser;
