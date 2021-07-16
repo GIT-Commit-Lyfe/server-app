@@ -2,6 +2,7 @@ const _ = require("lodash");
 const log = require("../../utils/log");
 const { cmsAuthorize } = require("./middleware");
 const { verifyPassword, generateToken } = require("./helpers");
+const { findUserByUsername, findUserByEmail } = require("./controller");
 
 module.exports = {
   "cms-login": [
@@ -52,7 +53,7 @@ module.exports = {
           name: userFound.name,
           username: userFound.username,
           role: userFound.role,
-          status: updatedUser.status,
+          status: userFound.status,
         }
 
         const token = generateToken(payload);
@@ -62,7 +63,7 @@ module.exports = {
         log.error(message);
         log.error(err.message);
         log.error(err);
-        res.status(400).json({ message });
+        res.status(500).json({ message });
       }
     }
   ],
@@ -88,7 +89,7 @@ module.exports = {
         if (username) {
           userFound = await findUserByUsername(username);
         } else {
-          userFound = await findUserByEmail(username);
+          userFound = await findUserByEmail(email);
         }
 
         if (!userFound) {
@@ -111,7 +112,8 @@ module.exports = {
           name: userFound.name,
           username: userFound.username,
           role: userFound.role,
-          status: updatedUser.status,
+          status: userFound.status,
+          subscription: userFound.subscription,
         }
 
         const token = generateToken(payload);
@@ -121,7 +123,7 @@ module.exports = {
         log.error(message);
         log.error(err.message);
         log.error(err);
-        res.status(400).json({ message });
+        res.status(500).json({ message });
       }
     }
   ],
@@ -155,7 +157,7 @@ module.exports = {
         log.error(message);
         log.error(err.message);
         log.error(err);
-        res.status(400).json({ message });
+        res.status(500).json({ message });
       }
     }
   ],
@@ -194,6 +196,7 @@ module.exports = {
           username: updatedUser.username,
           role: updatedUser.role,
           status: updatedUser.status,
+          subscription: updatedUser.subscription,
         }
 
         const token = generateToken(tokenPayload);
@@ -203,7 +206,7 @@ module.exports = {
         log.error(message);
         log.error(err.message);
         log.error(err);
-        res.status(400).json({ message });
+        res.status(500).json({ message });
       }
     }
   ],
