@@ -1,9 +1,29 @@
 const _ = require("lodash");
 const log = require("../../utils/log");
 const { User } = require("../../models");
+const { hashPassword } = require("./helpers");
+
+async function createAdmin(payload) {
+  const defaultPayload = {
+    googleConnect: false,
+    appleConnect: false,
+    facebookConnect: false,
+    picture: "",
+    config: "",
+    RoleId: 1,
+    SubscriptionId: 1,
+    StatusId: 1,
+  }
+  const createdAdmin = await User.create({
+    ...defaultPayload,
+    ...payload,
+  })
+
+  return createdAdmin;
+}
 
 async function findUserByUsername(username) {
-  const userFound= await User.findOne({
+  const userFound = await User.findOne({
     where: {
       username,
     }, 
@@ -24,7 +44,7 @@ async function findUserByUsername(username) {
 }
 
 async function findUserByEmail(email) {
-  const userFound= await User.findOne({
+  const userFound = await User.findOne({
     where: {
       email,
     }, 
@@ -90,9 +110,17 @@ async function updateUserByEmail(email, payload) {
   return mappedUser;
 }
 
+async function changePassword(user, newPassword) {
+  const hashed = hashPassword(newPassword);
+  await user.update({ password: hashed })
+  return true;
+}
+
 module.exports = {
+  createAdmin,
   findUserByUsername,
   findUserByEmail,
   signUpUser,
   updateUserByEmail,
+  changePassword,
 }

@@ -2,9 +2,34 @@ const _ = require("lodash");
 const log = require("../../utils/log");
 const { cmsAuthorize } = require("./middleware");
 const { verifyPassword, generateToken } = require("./helpers");
-const { findUserByUsername, findUserByEmail, signUpUser, updateUserByEmail } = require("./controller");
+const { createAdmin, findUserByUsername, findUserByEmail, signUpUser, updateUserByEmail, changePassword } = require("./controller");
 
 module.exports = {
+  "cms-signup": [
+    cmsAuthorize,
+    async (req, res, next) => {
+      if (req.method !== "POST") {
+        const message = "[cms-signup]:invalid method";
+        log.warn(message);
+        res.status(405).json({ message });
+        return;
+      }
+      
+      const pickProperties = [ "email", "username", "password", "firstName", "middleName", "lastName", "mobile" ];
+      const payload = _.pick(req.body, pickProperties);
+
+      try {
+        await createAdmin(payload);
+        res.status(200).json({ message: "admin created" });
+      } catch(err) {
+        const message = "[cms-signup]:internal server error";
+        log.error(message);
+        log.error(err.message);
+        log.error(err);
+        res.status(500).json({ message }); 
+      }
+    }
+  ],
   "cms-login": [
     cmsAuthorize,
     async (req, res, next) => {
@@ -17,7 +42,7 @@ module.exports = {
 
       const { username, password } = req.body;
       if (!username || !password) {
-        const message = "undefined credential";
+        const message = "[cms-login]:undefined credential";
         log.warn(message);
         res.status(400).json({ message });
         return;
@@ -68,7 +93,7 @@ module.exports = {
     }
   ],
   "app-login": [
-    (req, res, next) => {
+    async (req, res, next) => {
       if (req.method !== "POST") {
         const message = "[app-login]:invalid method";
         log.warn(message);
@@ -128,7 +153,7 @@ module.exports = {
     }
   ],
   "app-signup": [
-    (req, res, next) => {
+    async (req, res, next) => {
       if (req.method !== "POST") {
         const message = "[app-signup]:invalid method";
         log.warn(message);
@@ -163,7 +188,7 @@ module.exports = {
   ],
   "app-onboard": [
     verifyingToken,
-    (req, res, next) => {
+    async (req, res, next) => {
       if (req.method !== "POST") {
         const message = "[app-onboard]:invalid method";
         log.warn(message);
@@ -212,7 +237,7 @@ module.exports = {
   ],
   "verify-token": [
     verifyingToken,
-    (req, res, next) => {
+    async (req, res, next) => {
       if (req.method !== "GET") {
         const message = "[verify-token]:invalid method";
         log.warn(message);
@@ -231,4 +256,60 @@ module.exports = {
       res.send(200).json({ payload });
     }
   ],
+  "change-password": [
+    verifyingToken,
+    async (req, res, next) => {
+      if (req.method !== "GET") {
+        const message = "[change-password]:invalid method";
+        log.warn(message);
+        res.status(405).json({ message });
+        return;
+      }
+
+      if (!req.user) {
+        const message = "[change-password]:empty user info";
+        log.warn(message);
+        res.status(405).json({ message });
+        return;
+      }
+      
+      const { password, newPassword } = req.body;
+      const { email } = req.user;
+
+      if (!password || !newPassword) {
+        const message = "[change-password]:undefined credential";
+        log.warn(message);
+        res.status(400).json({ message });
+        return;
+      }
+
+      try {
+        const userFound = await findUserByEmail(email);
+        if (!userFound) {
+          const message = "[change-password]:invalid credential";
+          log.warn(message)
+          res.status(400).json({ message });
+          return;
+        }
+
+        const passwordVerified = verifyPassword(password, userFound.password);
+        if (!passwordVerified) {
+          const message = "[change-password]:invalid credential";
+          log.warn(message)
+          res.status(400).json({ message });
+          return;
+        }
+
+        await changePassword(userFound, newPassword);
+
+        res.status(200).json({ message: "password updated" });
+      } catch(err) {
+        const message = "[cms-login]:internal server error";
+        log.error(message);
+        log.error(err.message);
+        log.error(err);
+        res.status(500).json({ message });
+      }
+    }
+  ]
 }
