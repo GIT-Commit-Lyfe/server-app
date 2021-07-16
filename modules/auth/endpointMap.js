@@ -1,3 +1,4 @@
+const _ = require("lodash");
 const log = require("../../utils/log");
 const { cmsAuthorize } = require("./middleware");
 const { verifyPassword, generateToken } = require("./helpers");
@@ -7,7 +8,7 @@ module.exports = {
     cmsAuthorize,
     async (req, res, next) => {
       if (req.method !== "POST") {
-        const message = "invalid method";
+        const message = "[cms-login]:invalid method";
         log.warn(message);
         res.status(405).json({ message });
         return;
@@ -24,7 +25,7 @@ module.exports = {
       try {
         const userFound = await findUserByUsername(username);
         if (!userFound) {
-          const message = "invalid credential";
+          const message = "[cms-login]:invalid credential";
           log.warn(message)
           res.status(400).json({ message });
           return;
@@ -32,7 +33,7 @@ module.exports = {
 
         const passwordVerified = verifyPassword(password, userFound.password);
         if (!passwordVerified) {
-          const message = "invalid credential";
+          const message = "[cms-login]:invalid credential";
           log.warn(message)
           res.status(400).json({ message });
           return;
@@ -40,7 +41,7 @@ module.exports = {
 
         const isAdmin = userFound.role === "admin";
         if (!isAdmin) {
-          const message = "unauthorized role";
+          const message = "[cms-login]:unauthorized role";
           log.warn(message)
           res.status(401).json({ message });
           return;
@@ -51,12 +52,13 @@ module.exports = {
           name: userFound.name,
           username: userFound.username,
           role: userFound.role,
+          status: updatedUser.status,
         }
 
         const token = generateToken(payload);
         res.status(200).json({ token });
       } catch(err) {
-        const message = "internal server error";
+        const message = "[cms-login]:internal server error";
         log.error(message);
         log.error(err.message);
         log.error(err);
@@ -67,7 +69,7 @@ module.exports = {
   "app-login": [
     (req, res, next) => {
       if (req.method !== "POST") {
-        const message = "invalid method";
+        const message = "[app-login]:invalid method";
         log.warn(message);
         res.status(405).json({ message });
         return;
@@ -75,7 +77,7 @@ module.exports = {
 
       const { email, username, password } = req.body;
       if (!((username || email) && password)) {
-        const message = "undefined credential";
+        const message = "[app-login]:undefined credential";
         log.warn(message);
         res.status(400).json({ message });
         return;
@@ -88,9 +90,9 @@ module.exports = {
         } else {
           userFound = await findUserByEmail(username);
         }
-        
+
         if (!userFound) {
-          const message = "invalid credential";
+          const message = "[app-login]:invalid credential";
           log.warn(message)
           res.status(400).json({ message });
           return;
@@ -98,7 +100,7 @@ module.exports = {
 
         const passwordVerified = verifyPassword(password, userFound.password);
         if (!passwordVerified) {
-          const message = "invalid credential";
+          const message = "[app-login]:invalid credential";
           log.warn(message)
           res.status(400).json({ message });
           return;
@@ -109,12 +111,13 @@ module.exports = {
           name: userFound.name,
           username: userFound.username,
           role: userFound.role,
+          status: updatedUser.status,
         }
 
         const token = generateToken(payload);
         res.status(200).json({ token });
       } catch(err) {
-        const message = "internal server error";
+        const message = "[app-login]:internal server error";
         log.error(message);
         log.error(err.message);
         log.error(err);
@@ -124,7 +127,84 @@ module.exports = {
   ],
   "app-signup": [
     (req, res, next) => {
-      
+      if (req.method !== "POST") {
+        const message = "[app-signup]:invalid method";
+        log.warn(message);
+        res.status(405).json({ message });
+        return;
+      }
+
+      const { email, password } = req.body;
+      if (!(email && password)) {
+        const message = "[app-signup]:bad request";
+        log.warn(message);
+        res.status(400).json({ message });
+        return;
+      }
+
+      try {
+        const newUser = await signUpUser(email, password);
+        const payload = {
+          email: newUser.email,
+        }
+
+        const token = generateToken(payload);
+        res.status(200).json({ token });
+      } catch(err) {
+        const message = "[app-signup]:internal server error";
+        log.error(message);
+        log.error(err.message);
+        log.error(err);
+        res.status(400).json({ message });
+      }
+    }
+  ],
+  "app-onboard": [
+    verifyingToken,
+    (req, res, next) => {
+      if (req.method !== "POST") {
+        const message = "[app-onboard]:invalid method";
+        log.warn(message);
+        res.status(405).json({ message });
+        return;
+      }
+
+      const { firstName, middleName, lastName, username, mobile } = req.body;
+      if (!(firstName && middleName && lastName && username && mobile)) {
+        const message = "[app-onboard]:bad request";
+        log.warn(message);
+        res.status(400).json({ message });
+        return;
+      }
+
+      try {
+        const email = _.get(req, "user.email");
+        if (!email) {
+          const message = "[app-onboard]:bad token request";
+          log.warn(message);
+          res.status(400).json({ message });
+          return;
+        }
+
+        const payload = { firstName, middleName, lastName, username, mobile };
+        const updatedUser = await updateUserByEmail(email, payload);
+        const tokenPayload = {
+          email: updatedUser.email,
+          name: updatedUser.name,
+          username: updatedUser.username,
+          role: updatedUser.role,
+          status: updatedUser.status,
+        }
+
+        const token = generateToken(tokenPayload);
+        res.status(200).json({ token });
+      } catch(err) {
+        const message = "[app-onboard]:internal server error";
+        log.error(message);
+        log.error(err.message);
+        log.error(err);
+        res.status(400).json({ message });
+      }
     }
   ],
 }
