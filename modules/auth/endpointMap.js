@@ -2,7 +2,7 @@ const _ = require("lodash");
 const log = require("../../utils/log");
 const { cmsAuthorize } = require("./middleware");
 const { verifyPassword, generateToken } = require("./helpers");
-const { findUserByUsername, findUserByEmail } = require("./controller");
+const { findUserByUsername, findUserByEmail, signUpUser, updateUserByEmail } = require("./controller");
 
 module.exports = {
   "cms-login": [

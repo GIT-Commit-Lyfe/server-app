@@ -69,8 +69,30 @@ async function signUpUser(email, password) {
   return newUser;
 }
 
+async function updateUserByEmail(email, payload) {
+  const updatedUser = await User.update(payload, {
+    where: {
+      email,
+    },
+  }, {
+    include: [{ all: true }]
+  })
+
+  const mappedUser = Object.assign(
+    updatedUser,
+    {
+      role: _.get(updatedUser, "Role.name"),
+      status: _.get(updatedUser, "UserStatus.name"),
+      subscription: _.get(updatedUser, "Subscription"),
+    }
+  )
+
+  return mappedUser;
+}
+
 module.exports = {
   findUserByUsername,
   findUserByEmail,
   signUpUser,
+  updateUserByEmail,
 }
