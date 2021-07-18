@@ -6,7 +6,7 @@ const { findAll, findOneByPK, createOne, updateOneByPK, deleteOneByPK } = requir
 
 module.exports = {
   cms: [
-    (req, res, next) => {
+    async (req, res, next) => {
       const { routeId } = req.params
       if (!models[routeId]) {
         const message = "[cms]:no available table";
