@@ -26,7 +26,7 @@ module.exports = {
         log.error(message);
         log.error(err.message);
         log.error(err);
-        res.status(500).json({ message }); 
+        res.status(500).json({ message });
       }
     }
   ],
