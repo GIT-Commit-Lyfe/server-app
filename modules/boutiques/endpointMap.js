@@ -3,7 +3,8 @@ const log = require("../../utils/log");
 
 module.exports = {
   'findById': [
-    // middleware,
+    // multer.single,
+    // validator,
     (req, res, next) => {
       controller
     }

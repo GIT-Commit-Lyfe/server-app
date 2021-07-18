@@ -74,7 +74,7 @@ module.exports = {
       ClaspMaterialId: {
         type: Sequelize.INTEGER
       },
-      FunctionId: {
+      WatchFunctionId: {
         type: Sequelize.INTEGER
       },
       createdAt: {
