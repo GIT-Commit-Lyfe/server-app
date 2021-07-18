@@ -7,16 +7,18 @@ const { findAll, findOneByPK, createOne, updateOneByPK, deleteOneByPK } = requir
 module.exports = {
   cms: [
     async (req, res, next) => {
-      const { routeId } = req.params
+      const { routeId } = req.params;
       if (!models[routeId]) {
         const message = "[cms]:no available table";
         log.error(message);
         res.status(404).json({ message });
       }
-
+      const { id } = req.query;
+      const form = Object.assign({}, req.body);
+      const formKeys = Object.keys(form);
+      const ref = validator[routeId];
       switch (req.method) {
         case "GET":
-          const { id } = req.query;
           if (id) {
             try {
               const foundOne = await findOneByPK(routeId, { id });
@@ -42,11 +44,8 @@ module.exports = {
           }
           return;
         case "POST":
-          const form = Object.assign({}, req.body);
-          const formKeys = Object.keys(form);
-          const ref = validator[routeId];
-          const valid = _.isEqual(formKeys, ref);
-          if (!valid) {
+          const validToCreate = _.isEqual(formKeys, ref);
+          if (!validToCreate) {
             const message = "[cms]:no valid data";
             log.error(message);
             res.status(404).json({ message });
@@ -65,18 +64,14 @@ module.exports = {
           }
           return;
         case "PATCH":
-          const { id } = req.query;
           if (!id) {
             const message = "[cms]:no id defined";
             log.error(message);
             res.status(404).json({ message });
             return;
           }
-          const form = Object.assign({}, req.body);
-          const formKeys = Object.keys(form);
-          const ref = validator[routeId];
-          const valid = _.intersection(formKeys, ref).length === formKeys.length;
-          if (!valid) {
+          const validToUpdate = _.intersection(formKeys, ref).length === formKeys.length;
+          if (!validToUpdate) {
             const message = "[cms]:no valid data";
             log.error(message);
             res.status(404).json({ message });
@@ -93,7 +88,6 @@ module.exports = {
           }
           return;
         case "DELETE":
-          const { id } = req.query;
           if (!id) {
             const message = "[cms]:no id defined";
             log.error(message);
