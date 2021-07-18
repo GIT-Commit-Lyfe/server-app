@@ -1,6 +1,6 @@
 const _ = require("lodash");
 const log = require("../../utils/log");
-const { cmsAuthorize } = require("./middleware");
+const { cmsAuthorize, verifyingToken } = require("./middleware");
 const { verifyPassword, generateToken } = require("./helpers");
 const { createAdmin, findUserByUsername, findUserByEmail, signUpUser, updateUserByEmail, changePassword } = require("./controller");
 
