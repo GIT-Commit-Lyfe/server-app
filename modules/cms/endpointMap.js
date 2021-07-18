@@ -1,7 +1,7 @@
 const _ = require("lodash");
 const log = require("../../utils/log");
 const models = require("../../models");
-const validator = require("../seeding/validator.json");
+const validator = require("../../middleware/fileValidator/validator.json");
 const { findAll, findOneByPK, createOne, updateOneByPK, deleteOneByPK } = require("./controller");
 
 module.exports = {
