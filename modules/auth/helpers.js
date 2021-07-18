@@ -103,17 +103,6 @@ function finalDecrypt(encryption) {
   }
 }
 
-function test() {
-  process.env.JWT_SECRET="nTHTmPuKXGpqY5NSdgECkA6fz35Q2W"
-  process.env.ENCRYPTION_TOKEN="QKtsYzmxFjMXGbCD6KfUkEU4dT4AZrMh"
-  const obj = { a: "oke" };
-  const jwt = generateToken(obj);
-  const verified = verifyToken(jwt);
-  console.log({ obj, jwt, verified });
-
-  return;
-}
-
 module.exports = {
   hashPassword,
   verifyPassword,
@@ -121,5 +110,4 @@ module.exports = {
   verifyToken,
   finalEncrypt,
   finalDecrypt,
-  test
 }
