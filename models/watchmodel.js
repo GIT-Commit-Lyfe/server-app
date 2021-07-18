@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       WatchModel.belongsTo(models.BraceletColor, { foreignKey: 'BraceletColorId' })
       WatchModel.belongsTo(models.Clasp, { foreignKey: 'ClaspId' })
       WatchModel.belongsTo(models.ClaspMaterial, { foreignKey: 'ClaspMaterialId' })
-      WatchModel.belongsTo(models.WatchFunction, { foreignKey: 'FunctionId' })
+      WatchModel.belongsTo(models.WatchFunction, { foreignKey: 'WatchFunctionId' })
       WatchModel.hasMany(models.Product, { foreignKey: 'ReferenceId' })
     }
   };
@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
     BraceletColorId: DataTypes.INTEGER,
     ClaspId: DataTypes.INTEGER,
     ClaspMaterialId: DataTypes.INTEGER,
-    FunctionId: DataTypes.INTEGER
+    WatchFunctionId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'WatchModel',
