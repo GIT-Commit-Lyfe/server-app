@@ -1,5 +1,4 @@
 const _ = require("lodash");
-const log = require("../../utils/log");
 const { User } = require("../../models");
 const { hashPassword } = require("./helpers");
 
