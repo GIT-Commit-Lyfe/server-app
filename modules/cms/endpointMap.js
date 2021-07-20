@@ -50,7 +50,7 @@ module.exports = {
           }
           return;
         case "POST":
-          const validToCreate = _.isEqual(formKeys, ref);
+          const validToCreate = _.isEqual(formKeys, ref) || _.isEqual(formKeys, ["id", ...ref]);
           if (!validToCreate) {
             const message = "[cms]:no valid data";
             log.error(message);
@@ -78,7 +78,7 @@ module.exports = {
             res.status(404).json({ message });
             return;
           }
-          const validToUpdate = _.intersection(formKeys, ref).length === formKeys.length;
+          const validToUpdate = _.intersection(formKeys, ["id", ...ref]).length === formKeys.length;
           if (!validToUpdate) {
             const message = "[cms]:no valid data";
             log.error(message);
