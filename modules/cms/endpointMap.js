@@ -12,6 +12,7 @@ module.exports = {
         const message = "[cms]:no available table";
         log.error(message);
         res.status(404).json({ message });
+        return;
       }
       const { id } = req.query;
       const form = Object.assign({}, req.body);
@@ -22,6 +23,8 @@ module.exports = {
           if (id) {
             try {
               const foundOne = await findOneByPK(routeId, { id });
+              const message = foundOne ? `data id:${foundOne.id} found in ${routeId} table.` : `${id} not found in ${routeId} table.`;
+              log.info(message);
               res.status(200).json(foundOne);
             } catch(err) {
               const message = "[cms]:internal server error";
@@ -34,6 +37,8 @@ module.exports = {
           }
           try {
             const foundList = await findAll(routeId);
+            const message = `${foundList.length} data found in ${routeId} table.`;
+            log.info(message);
             res.status(200).json(foundList);
           } catch(err) {
             const message = "[cms]:internal server error";
@@ -49,12 +54,14 @@ module.exports = {
             const message = "[cms]:no valid data";
             log.error(message);
             res.status(404).json({ message });
+            return;
           }
 
           try {
-            await createOne(routeId, form);
-            const message = `data added to ${routeId} table.`
-            res.status(200).json({ message });
+            const created = await createOne(routeId, form);
+            const message = `data id:${created.id} added to ${routeId} table.`;
+            log.info(message);
+            res.status(200).json(created);
           } catch(err) {
             const message = "[cms]:internal server error";
             log.error(message);
@@ -78,6 +85,8 @@ module.exports = {
           }
           try {
             const updatedOne = await updateOneByPK(routeId, { id, form });
+            const message = updatedOne ? `data id:${updatedOne.id} updated to ${routeId} table.` : `${id} not found in ${routeId} table.`;
+            log.info(message);
             res.status(200).json(updatedOne);
           } catch(err) {
             const message = "[cms]:internal server error";
@@ -96,6 +105,8 @@ module.exports = {
           }
           try {
             const deletedOne = await deleteOneByPK(routeId, { id });
+            const message = deletedOne ? `data id:${deletedOne.id} deleted from ${routeId} table.` : `${id} not found in ${routeId} table.`;
+            log.info(message);
             res.status(200).json(deletedOne);
           } catch(err) {
             const message = "[cms]:internal server error";
@@ -106,6 +117,9 @@ module.exports = {
           }
           return;
         default:
+          const message = "[cms]:invalid method";
+          log.warn(message);
+          res.status(405).json({ message });
           return;
       }
     }
