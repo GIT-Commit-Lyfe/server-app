@@ -1,6 +1,7 @@
 const _ = require("lodash");
 const { sequelize } = require('../../db/sequelize');
 const Papa = require('papaparse');
+const log = require('../../utils/log')
 
 module.exports = async function (req, res, next) {
   const { routeId } = req.params;
@@ -12,7 +13,7 @@ module.exports = async function (req, res, next) {
     return;
   }
   // Proses ngambil buffer ke string csv
-  if (!req,file) {
+  if (!req.file) {
     const message = "[seeding]:no available csv file";
     log.error(message);
     res.status(404).json({ message });
@@ -46,7 +47,7 @@ module.exports = async function (req, res, next) {
       updatedAt: new Date()
     }));
 
-    await sequelize.queryInterface.bulkInsert(routeId, seedJSON);
+    await sequelize.queryInterface.bulkInsert(routeId + 's', seedJSON);
     log.info(`${seedJSON.length} data seeded to ${routeId}`);
     next();
   } catch(err) {
