@@ -18,5 +18,6 @@ module.exports = async () => {
     } catch(error) {
       log.warn("Failed migrating -> " + file);
     }
+    log.info("All done!");
   });
 }

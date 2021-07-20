@@ -2,7 +2,8 @@ const _ = require("lodash");
 const log = require("../../utils/log");
 const models = require("../../models");
 const validator = require("../../middleware/fileValidator/validator.json");
-const { findAll, findOneByPK, createOne, updateOneByPK, deleteOneByPK } = require("./controller");
+const { findAll, findOneByPK, createOne, updateOneByPK, deleteOneByPK, demigrate } = require("./controller");
+const { cmsAuthorize } = require("../auth/middleware");
 
 module.exports = {
   cms: [
@@ -124,4 +125,20 @@ module.exports = {
       }
     }
   ],
+  "wipe-data": [
+    cmsAuthorize,
+    async (req, res, next) => {
+      if (req.method !== "POST") {
+        const message = "[wipe-data]:invalid method";
+        log.warn(message);
+        res.status(405).json({ message });
+        return;
+      }
+
+      const { routeId } = req.params;
+      await demigrate(routeId);
+      const message = "done";
+      res.status(200).json({ message });
+    }
+  ]
 }
