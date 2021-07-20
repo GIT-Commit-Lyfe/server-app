@@ -3,6 +3,12 @@ const log = require("../../utils/log");
 module.exports = {
   ping: [
     (req, res, next) => {
+      next();
+    },
+    (req, res, next) => {
+      next();
+    },
+    (req, res, next) => {
       log.info("PONG");
       res.send("PONG");
     }
