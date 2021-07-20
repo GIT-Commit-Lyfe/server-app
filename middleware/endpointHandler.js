@@ -21,20 +21,20 @@ module.exports = (options = { mode: "api" }) => {
     const { routePath } = req.params;
     const handlers = endpointMap[routePath];
   
-    if (!handlers || handlers.length === 0) {
+    if (!handlers || (Array.isArray(handlers) && handlers.length === 0)) {
       log.warn("undefined :routepath");
       res.status(400).send("undefined /:routepath");
-      return
+      return;
     }
     
     let counter = 0;
     const nextFn = (err) => {
       if (err) {
-        next(err)
+        next(err);
         return;
       }
       if (Array.isArray(handlers) && counter === handlers.length - 1) {
-        next()
+        next();
         return;
       }
       handlers[++counter](req, res, nextFn);
