@@ -5,7 +5,7 @@ async function findAll(table) {
 }
 
 async function findOneByPK(table, { id }) {
-  return await models[table].findOneByPk(id);
+  return await models[table].findByPk(id);
 }
 
 async function createOne(table, form) {
