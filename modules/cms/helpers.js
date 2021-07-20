@@ -3,9 +3,9 @@ const validator = require("../../middleware/fileValidator/validator.json");
 
 function parsedModelToObject(table, model) {
   if (!model) {
-    return;
+    return null;
   }
-  
+
   const parsed = Object.assign({}, _.pick(model, ["id", ...validator[table], "createdAt", "updatedAt"]));
 
   return parsed;

@@ -23,7 +23,7 @@ module.exports = {
           if (id) {
             try {
               const foundOne = await findOneByPK(routeId, { id });
-              const message = foundOne ? `data id:${foundOne.id} found in ${routeId} table.` : `${id} not found in ${routeId} table.`;
+              const message = foundOne ? `data id:${foundOne.id} found in ${routeId} table.` : `id:${id} not found in ${routeId} table.`;
               log.info(message);
               res.status(200).json(foundOne);
             } catch(err) {
@@ -85,7 +85,7 @@ module.exports = {
           }
           try {
             const updatedOne = await updateOneByPK(routeId, { id, form });
-            const message = updatedOne ? `data id:${updatedOne.id} updated to ${routeId} table.` : `${id} not found in ${routeId} table.`;
+            const message = updatedOne ? `data id:${updatedOne.id} updated to ${routeId} table.` : `id:${id} not found in ${routeId} table.`;
             log.info(message);
             res.status(200).json(updatedOne);
           } catch(err) {
@@ -105,7 +105,7 @@ module.exports = {
           }
           try {
             const deletedOne = await deleteOneByPK(routeId, { id });
-            const message = deletedOne ? `data id:${deletedOne.id} deleted from ${routeId} table.` : `${id} not found in ${routeId} table.`;
+            const message = deletedOne ? `data id:${deletedOne.id} deleted from ${routeId} table.` : `id:${id} not found in ${routeId} table.`;
             log.info(message);
             res.status(200).json(deletedOne);
           } catch(err) {
