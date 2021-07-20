@@ -7,8 +7,8 @@
     {
       "id": "envFile",
       "type": "pickString",
-      "description": "What client do you want to run?",
-      "default": "env",
+      "description": "What env do you want to run?",
+      "default": "local",
       "options": [
         "local",
         "remote",
