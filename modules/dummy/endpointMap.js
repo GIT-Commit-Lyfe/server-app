@@ -4,6 +4,9 @@ const {
   blogs,
   watchLists,
   followedListings,
+  popularModels,
+  popularNearby,
+  trendingModels,
 } = require("./json");
 
 module.exports = {
@@ -27,76 +30,21 @@ module.exports = {
       res.send(followedListings);
     }
   ],
-  'popular-models': [(req, res, next) => {
-    res.send([
-      {
-        "id": 1,
-        "reference": "126710BLRO",
-        "significantEdition": "GMT Pepsi",
-        "collection": "GMT Master II",
-        "marketPrice": 13350,
-        "currency": "EUR",
-        "raising": true,
-        "modelUrl": "https://dummy.com/dummy.jpeg"
-      },
-      {
-        "id": 2,
-        "reference": "5711A",
-        "significantEdition": "Olive Green",
-        "collection": "Nautilus",
-        "marketPrice": 99850,
-        "currency": "EUR",
-        "raising": true,
-        "modelUrl": "https://dummy.com/dummy1.jpeg"
-      },
-    ])
-  }],
-  'popular-nearby': [(req, res, next) => {
-    res.send([
-      {
-        "id": 1,
-        "brand": "Rolex",
-        "code": "RLX",
-        "SECode": "F4",
-        "reference": "16610LV",
-        "significantEdition": "KERMIT FLAT 4",
-        "collection": "Submariner Date",
-        "year": "2004",
-        "price": 13350,
-        "currency": "EUR",
-        "condition": "Fair",
-        "accomodation": "Full Set",
-        "country": "DE",
-        "city": "Berlin",
-        "sellerType": "Individual Investor",
-        "modelUrl": "https://dummy.com/dummy.jpeg"
-      },
-    ])
-  }],
-  'trending-models': [(req, res, next) => {
-    res.send([
-      {
-        "id": 1,
-        "reference": "126710BLRO",
-        "significantEdition": "GMT Pepsi",
-        "collection": "GMT Master II",
-        "marketPrice": 13350,
-        "currency": "EUR",
-        "raising": true,
-        "modelUrl": "https://dummy.com/dummy.jpeg"
-      },
-      {
-        "id": 2,
-        "reference": "5711A",
-        "significantEdition": "Olive Green",
-        "collection": "Nautilus",
-        "marketPrice": 99850,
-        "currency": "EUR",
-        "raising": true,
-        "modelUrl": "https://dummy.com/dummy1.jpeg"
-      },
-    ])
-  }],
+  'popular-models': [
+    (req, res, next) => {
+      res.send(popularModels);
+    }
+  ],
+  'popular-nearby': [
+    (req, res, next) => {
+      res.send(popularNearby);
+    }
+  ],
+  'trending-models': [
+    (req, res, next) => {
+      res.send(trendingModels);
+    }
+  ],
   'followed-boutiques': [(req, res, next) => {
     res.send(
       [

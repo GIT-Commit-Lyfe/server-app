@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "reference": "126710BLRO",
+    "significantEdition": "GMT PEPSI",
+    "collection": "GMT Master II",
+    "marketPrice": 13350,
+    "currency": "EUR",
+    "raising": true,
+    "modelUrl": "https://storage.googleapis.com/tws-bucket/dummy/126710BLRO.png"
+  },
+  {
+    "id": 2,
+    "reference": "5711A",
+    "significantEdition": "Olive Green",
+    "collection": "Nautilus",
+    "marketPrice": 99850,
+    "currency": "EUR",
+    "raising": true,
+    "modelUrl": "https://storage.googleapis.com/tws-bucket/dummy/5711A.png"
+  },
+  {
+    "id": 3,
+    "reference": "116710BLNR",
+    "significantEdition": "GMT BATMAN",
+    "collection": "GMT Master II",
+    "marketPrice": 14350,
+    "currency": "EUR",
+    "raising": true,
+    "modelUrl": "https://storage.googleapis.com/tws-bucket/dummy/116710BLNR.png"
+  }
+]
