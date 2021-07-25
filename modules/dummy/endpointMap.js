@@ -1,91 +1,32 @@
 const log = require("../../utils/log");
+const {
+  priceBanners,
+  blogs,
+  watchLists,
+  followedListings,
+} = require("./json");
 
 module.exports = {
-  'price-banners': [(req, res, next) => {
-    res.send([
-      {
-        "id": 1,
-        "code": "RLX",
-        "reference": "22334",
-        "raising": true,
-        "price": 14500,
-        "currency": "EUR"
-      },
-      {
-        "id": 2,
-        "code": "RLX",
-        "reference": "44556",
-        "raising": false,
-        "price": 12500,
-        "currency": "EUR"
-      },
-    ])
-  }],
-  'blogs': [(req, res, next) => {
-    res.send([
-      {
-        "id": 1,
-        "url": "https://blog.test/1",
-        "cover": "https://cover.test/dummy.jpg"
-      },
-      {
-        "id": 2,
-        "url": "https://blog.test/2",
-        "cover": "https://cover.test/dummy-2.jpg"
-      },
-      {
-        "id": 3,
-        "url": "https://blog.test/3",
-        "cover": "https://cover.test/dummy-3.jpg"
-      }
-    ])
-  }],
-  'watch-lists': [(req, res, next) => {
-    res.send([
-      {
-        "id": 1,
-        "reference": "126710BLRO",
-        "significantEdition": "GMT Pepsi",
-        "collection": "GMT Master II",
-        "marketPrice": 13350,
-        "currency": "EUR",
-        "raising": true,
-        "modelUrl": "https://dummy.com/dummy.jpeg"
-      },
-      {
-        "id": 2,
-        "reference": "5711A",
-        "significantEdition": "Olive Green",
-        "collection": "Nautilus",
-        "marketPrice": 99850,
-        "currency": "EUR",
-        "raising": true,
-        "modelUrl": "https://dummy.com/dummy1.jpeg"
-      },
-    ])
-  }],
-  'followed-listings': [(req, res, next) => {
-    res.send([
-      {
-        "id": 1,
-        "brand": "Rolex",
-        "code": "RLX",
-        "SECode": "F4",
-        "reference": "16610LV",
-        "significantEdition": "KERMIT FLAT 4",
-        "collection": "Submariner Date",
-        "year": "2004",
-        "price": 13350,
-        "currency": "EUR",
-        "condition": "Fair",
-        "accomodation": "Full Set",
-        "country": "DE",
-        "city": "Berlin",
-        "sellerType": "Individual Investor",
-        "modelUrl": "https://dummy.com/dummy.jpeg"
-      },
-    ])
-  }],
+  'price-banners': [
+    (req, res, next) => {
+      res.send(priceBanners);
+    }
+  ],
+  'blogs': [
+    (req, res, next) => {
+      res.send(blogs);
+    }
+  ],
+  'watch-lists': [
+    (req, res, next) => {
+      res.send(watchLists);
+    }
+  ],
+  'followed-listings': [
+    (req, res, next) => {
+      res.send(followedListings);
+    }
+  ],
   'popular-models': [(req, res, next) => {
     res.send([
       {
