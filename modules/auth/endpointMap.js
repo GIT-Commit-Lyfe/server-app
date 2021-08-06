@@ -1,4 +1,5 @@
 const _ = require("lodash");
+const passport = require("passport");
 const log = require("../../utils/log");
 const { cmsAuthorize, verifyingToken } = require("./middleware");
 const { verifyPassword, generateToken } = require("./helpers");
@@ -6,7 +7,7 @@ const { createAdmin, findUserByUsername, findUserByEmail, signUpUser, updateUser
 
 module.exports = {
   "cms-signup": [
-    cmsAuthorize,
+    passport.authenticate("basic", { session: false }),
     async (req, res, next) => {
       if (req.method !== "POST") {
         const message = "[cms-signup]:invalid method";
@@ -17,11 +18,27 @@ module.exports = {
       
       const pickProperties = [ "email", "username", "password", "firstName", "middleName", "lastName", "mobile" ];
       const payload = _.pick(req.body, pickProperties);
+      const payloadKeys = Object.keys(payload);
+      const diffKeys = _.difference(pickProperties, payloadKeys);
+      if (diffKeys.length > 1) {
+        const message = "[cms-signup]:missing properties";
+        log.warn(message);
+        res.status(405).json({ message, missing: diffKeys });
+        return;
+      }
 
       try {
         await createAdmin(payload);
         res.status(200).json({ message: "admin created" });
       } catch(err) {
+        if (err.name === "SequelizeValidationError") {
+          const reasons = err.message.replace(/Validation error: /g, "").split("\n");
+          const message = "[cms-signup]:ValidationError";
+          log.error(message);
+          log.error(err);
+          res.status(400).json({ message, reasons });
+          return;
+        }
         const message = "[cms-signup]:internal server error";
         log.error(message);
         log.error(err.message);
