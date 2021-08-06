@@ -24,8 +24,47 @@ module.exports = (sequelize, DataTypes) => {
     firstName: DataTypes.STRING,
     middleName: DataTypes.STRING,
     lastName: DataTypes.STRING,
-    email: DataTypes.STRING,
-    username: DataTypes.STRING,
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          args: true,
+          msg: 'required'
+        },
+        isUnique: async function (email) {
+          const data = await User.findOne({ where: { email } });
+          if (data) {
+            throw new Error('email has been registered');
+          }
+          return;
+        },
+        isEmail: function(email) {
+          const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          if (!regex.test(email)) {
+            throw new Error('not email format');
+          }
+          return;
+        }
+      }
+    },
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          args: true,
+          msg: 'required'
+        },
+        isUnique: async function (username) {
+          const data = await User.findOne({ where: { username } });
+          if (data) {
+            throw new Error('username has been registered');
+          }
+          return;
+        }
+      }
+    },
     password: DataTypes.STRING,
     googleConnect: DataTypes.BOOLEAN,
     appleConnect: DataTypes.BOOLEAN,
