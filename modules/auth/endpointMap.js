@@ -82,10 +82,10 @@ module.exports = {
           return;
         }
 
-        const isAdmin = userFound.role === "admin";
+        const isAdmin = userFound.role === "admin" || userFound.role === "master";
         if (!isAdmin) {
           const message = "[cms-login]:unauthorized role";
-          log.warn(message)
+          log.warn(message);
           res.status(401).json({ message });
           return;
         }
