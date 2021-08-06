@@ -1,20 +1,35 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const passport = require("passport");
+const { BasicStrategy } = require("passport-http");
 
-var indexRouter = require('./routes/index');
-var authRouter = require('./routes/auth');
-var apiRouter = require('./routes/api');
-var dummyRouter = require('./routes/dummy');
-var cors = require("./middleware/cors");
+const indexRouter = require('./routes/index');
+const authRouter = require('./routes/auth');
+const apiRouter = require('./routes/api');
+const dummyRouter = require('./routes/dummy');
+const cors = require("./middleware/cors");
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
+passport.use(
+  new BasicStrategy(function (username, password, done) {
+    if (
+      username === process.env.BASIC_AUTH_USERNAME &&
+      password === process.env.BASIC_AUTH_PASSWORD
+    ) {
+      return done(null, { user: username });
+    }
+  })
+);
+
+app.use(passport.initialize());
 
 app.use(cors);
 app.use(logger('dev'));
