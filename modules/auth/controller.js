@@ -26,7 +26,6 @@ async function findUserByUsername(username) {
     where: {
       username,
     }, 
-  }, {
     include: [{ all: true }]
   })
 
