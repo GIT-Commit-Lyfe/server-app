@@ -270,7 +270,7 @@ module.exports = {
       }
 
       const payload = Object.assign({}, req.user);
-      res.send(200).json({ payload });
+      res.status(200).json({ payload });
     }
   ],
   "change-password": [
