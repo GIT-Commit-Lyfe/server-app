@@ -47,7 +47,7 @@ module.exports = async function (req, res, next) {
       updatedAt: new Date()
     }));
 
-    await sequelize.queryInterface.bulkInsert(routeId + 's', seedJSON);
+    await sequelize.queryInterface.bulkInsert(routeId + `${routeId[routeId.length-1] === "s" ? "e" : ""}s`, seedJSON);
     log.info(`${seedJSON.length} data seeded to ${routeId}`);
     next();
   } catch(err) {
