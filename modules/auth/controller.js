@@ -4,6 +4,7 @@ const { hashPassword } = require("./helpers");
 
 async function createAdmin(payload) {
   const defaultPayload = {
+    passwordUpdated: false,
     googleConnect: false,
     appleConnect: false,
     facebookConnect: false,
@@ -29,6 +30,10 @@ async function findUserByUsername(username) {
     include: [{ all: true }]
   })
 
+  if (!userFound) {
+    return;
+  }
+
   const userMapped = Object.assign(
     userFound,
     {
@@ -49,6 +54,10 @@ async function findUserByEmail(email) {
   }, {
     include: [{ all: true }]
   })
+
+  if (!userFound) {
+    return;
+  }
 
   const userMapped = Object.assign(
     userFound,
@@ -95,6 +104,10 @@ async function updateUserByEmail(email, payload) {
   }, {
     include: [{ all: true }]
   })
+
+  if (!userFound) {
+    return;
+  }
 
   const mappedUser = Object.assign(
     updatedUser,

@@ -1,6 +1,7 @@
 const _ = require("lodash");
 const log = require("../../utils/log");
 const { verifyToken } = require("./helpers");
+const { findUserByEmail } = require("./controller");
 
 const cmsAuthorize = (req, res, next) => {
   const accessToken = _.get(req, "headers.authorization") || _.get(req, "body.auth");
@@ -25,7 +26,7 @@ const cmsAuthorize = (req, res, next) => {
   next();
 }
 
-const verifyingToken = (req, res, next) => {
+const verifyingToken = async (req, res, next) => {
   const accessToken = _.get(req, "headers.authorization", "");
   if (!accessToken) {
     const message = "token not found";
@@ -42,6 +43,21 @@ const verifyingToken = (req, res, next) => {
     const message = "invalid token";
     log.warn(message);
     res.status(401).json({ message });
+    return;
+  }
+
+  const userFound = await findUserByEmail(verified.email);
+  if (!userFound) {
+    const message = "unidentified token";
+    log.warn(message)
+    res.status(401).json({ message });
+    return;
+  }
+
+  if (userFound.passwordUpdated) {
+    const message = "unauthorized token";
+    log.warn(message)
+    res.status(400).json({ message });
     return;
   }
 

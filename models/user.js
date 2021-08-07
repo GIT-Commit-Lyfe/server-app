@@ -66,6 +66,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     password: DataTypes.STRING,
+    passwordUpdated: DataTypes.BOOLEAN,
     googleConnect: DataTypes.BOOLEAN,
     appleConnect: DataTypes.BOOLEAN,
     facebookConnect: DataTypes.BOOLEAN,

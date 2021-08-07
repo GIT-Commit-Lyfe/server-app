@@ -30,6 +30,9 @@ module.exports = {
       password: {
         type: Sequelize.STRING
       },
+      passwordUpdated: {
+        type: Sequelize.BOOLEAN
+      },
       googleConnect: {
         type: Sequelize.BOOLEAN
       },

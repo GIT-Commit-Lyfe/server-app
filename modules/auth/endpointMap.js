@@ -90,12 +90,18 @@ module.exports = {
           return;
         }
 
+        // for user change password, need to login again to update this to be false again
+        if (userFound.passwordUpdated) {
+          await userFound.update({ passwordUpdated: false });
+        }
+
         const payload = {
           email: userFound.email,
           name: userFound.name,
           username: userFound.username,
           role: userFound.role,
           status: userFound.status,
+          subscription: userFound.subscription,
         }
 
         const token = generateToken(payload);
@@ -232,6 +238,14 @@ module.exports = {
 
         const payload = { firstName, middleName, lastName, username, mobile };
         const updatedUser = await updateUserByEmail(email, payload);
+
+        if (!updatedUser) {
+          const message = "[app-onboard]:user no found";
+          log.warn(message);
+          res.status(400).json({ message });
+          return;
+        }
+
         const tokenPayload = {
           email: updatedUser.email,
           name: updatedUser.name,
@@ -276,7 +290,7 @@ module.exports = {
   "change-password": [
     verifyingToken,
     async (req, res, next) => {
-      if (req.method !== "GET") {
+      if (req.method !== "POST") {
         const message = "[change-password]:invalid method";
         log.warn(message);
         res.status(405).json({ message });
@@ -318,6 +332,9 @@ module.exports = {
         }
 
         await changePassword(userFound, newPassword);
+
+        // will be used in middleware verifying token check if password updated
+        await userFound.update({ passwordUpdated: true });
 
         res.status(200).json({ message: "password updated" });
       } catch(err) {
