@@ -59,7 +59,7 @@ const verifyingToken = async (req, res, next) => {
   if (userFound.passwordUpdated) {
     const message = "unauthorized token";
     log.warn(message)
-    res.status(400).json({ message });
+    res.status(401).json({ message });
     return;
   }
 
@@ -73,12 +73,19 @@ const checkStatus = (req, res, next) => {
   if (!req.user || !req.userDetails) {
     const message = "empty user info";
     log.warn(message);
-    res.status(400).json({ message });
+    res.status(401).json({ message });
     return;
   }
 
-  if (req.user.status === req.userDetails.status && req.user.status === "blocked") {
+  if (req.userDetails.status === "blocked") {
     const message = "user is blocked";
+    log.warn(message);
+    res.status(401).json({ message });
+    return;
+  }
+
+  if (req.user.status !== req.userDetails.status) {
+    const message = "user status not updated, login again";
     log.warn(message);
     res.status(401).json({ message });
     return;
