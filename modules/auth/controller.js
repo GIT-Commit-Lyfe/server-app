@@ -2,7 +2,7 @@ const _ = require("lodash");
 const { User } = require("../../models");
 const { hashPassword } = require("./helpers");
 
-async function createAdmin(payload) {
+async function createAdmin(payload = {}) {
   const defaultPayload = {
     passwordUpdated: false,
     googleConnect: false,
@@ -22,7 +22,7 @@ async function createAdmin(payload) {
   return createdAdmin;
 }
 
-async function findUserByUsername(username) {
+async function findUserByUsername(username = "") {
   const userFound = await User.findOne({
     where: {
       username,
@@ -50,7 +50,7 @@ async function findUserByUsername(username) {
   return userMapped;
 }
 
-async function findUserByEmail(email) {
+async function findUserByEmail(email = "") {
   const userFound = await User.findOne({
     where: {
       email,
@@ -90,7 +90,7 @@ async function signUpUser(email, password) {
     mobile: "",
     picture: "",
     config: "",
-    RoleId: 2,
+    RoleId: 3,
     SubscriptionId: 1,
     StatusId: 1,
   }
@@ -103,24 +103,20 @@ async function signUpUser(email, password) {
   return newUser;
 }
 
-async function updateUserByEmail(email, payload) {
-  const updatedUser = await User.update(payload, {
-    where: {
-      email,
-    },
-    include: [{ all: true }],
-  });
-
+async function updateUserByEmail(email = "", payload = {}) {
+  const userFound = await findUserByEmail(email);
   if (!userFound) {
     return;
   }
 
-  const subscription = _.get(updatedUser, "Subscription", {});
+  await userFound.update(payload);
+
+  const subscription = _.get(userFound, "Subscription", {});
   const mappedUser = Object.assign(
-    updatedUser,
+    userFound,
     {
-      role: _.get(updatedUser, "Role.name"),
-      status: _.get(updatedUser, "UserStatus.name"),
+      role: _.get(userFound, "Role.name"),
+      status: _.get(userFound, "UserStatus.name"),
       subscription: {
         name: subscription.name,
         value: subscription.value,

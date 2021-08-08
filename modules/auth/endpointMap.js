@@ -156,6 +156,11 @@ module.exports = {
           return;
         }
 
+        // for user change password, need to login again to update this to be false again
+        if (userFound.passwordUpdated) {
+          await userFound.update({ passwordUpdated: false });
+        }
+
         const payload = {
           email: userFound.email,
           name: userFound.name,
@@ -202,6 +207,14 @@ module.exports = {
         const token = generateToken(payload);
         res.status(200).json({ token });
       } catch (err) {
+        if (err.name === "SequelizeValidationError") {
+          const reasons = err.message.replace(/Validation error: /g, "").split("\n");
+          const message = "[cms-signup]:ValidationError";
+          log.error(message);
+          log.error(err);
+          res.status(400).json({ message, reasons });
+          return;
+        }
         const message = "[app-signup]:internal server error";
         log.error(message);
         log.error(err.message);
@@ -259,6 +272,14 @@ module.exports = {
         const token = generateToken(tokenPayload);
         res.status(200).json({ token });
       } catch (err) {
+        if (err.name === "SequelizeValidationError") {
+          const reasons = err.message.replace(/Validation error: /g, "").split("\n");
+          const message = "[cms-signup]:ValidationError";
+          log.error(message);
+          log.error(err);
+          res.status(400).json({ message, reasons });
+          return;
+        }
         const message = "[app-onboard]:internal server error";
         log.error(message);
         log.error(err.message);
