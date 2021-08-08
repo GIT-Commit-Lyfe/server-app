@@ -34,12 +34,16 @@ async function findUserByUsername(username) {
     return;
   }
 
+  const subscription = _.get(userFound, "Subscription", {});
   const userMapped = Object.assign(
     userFound,
     {
       role: _.get(userFound, "Role.name"),
       status: _.get(userFound, "UserStatus.name"),
-      subscription: _.get(userFound, "Subscription"),
+      subscription: {
+        name: subscription.name,
+        value: subscription.value,
+      },
     },
   )
 
@@ -59,12 +63,16 @@ async function findUserByEmail(email) {
     return;
   }
 
+  const subscription = _.get(userFound, "Subscription", {});
   const userMapped = Object.assign(
     userFound,
     {
       role: _.get(userFound, "Role.name"),
       status: _.get(userFound, "UserStatus.name"),
-      subscription: _.get(userFound, "Subscription"),
+      subscription: {
+        name: subscription.name,
+        value: subscription.value,
+      },
     },
   )
 
@@ -109,12 +117,16 @@ async function updateUserByEmail(email, payload) {
     return;
   }
 
+  const subscription = _.get(updatedUser, "Subscription", {});
   const mappedUser = Object.assign(
     updatedUser,
     {
       role: _.get(updatedUser, "Role.name"),
       status: _.get(updatedUser, "UserStatus.name"),
-      subscription: _.get(updatedUser, "Subscription"),
+      subscription: {
+        name: subscription.name,
+        value: subscription.value,
+      },
     }
   )
 

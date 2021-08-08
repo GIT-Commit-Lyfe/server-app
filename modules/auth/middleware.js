@@ -29,7 +29,7 @@ const cmsAuthorize = (req, res, next) => {
 const verifyingToken = async (req, res, next) => {
   const paramToken = _.get(req, "query.auth", "");
   const headerToken = _.get(req, "headers.authorization", "");
-  const accessToken = req.params.routePath === "verify-user" ? paramToken : headerToken;
+  const accessToken = req.params.routePath === "verify-user" ? "Bearer " + paramToken : headerToken;
   if (!accessToken) {
     const message = "token not found";
     log.warn(message);
