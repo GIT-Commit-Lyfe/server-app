@@ -1,7 +1,7 @@
 const _ = require("lodash");
 const passport = require("passport");
 const log = require("../../utils/log");
-const { cmsAuthorize, verifyingToken } = require("./middleware");
+const { cmsAuthorize, verifyingToken, checkStatus } = require("./middleware");
 const { verifyPassword, generateToken } = require("./helpers");
 const { createAdmin, findUserByUsername, findUserByEmail, signUpUser, updateUserByEmail, changePassword } = require("./controller");
 
@@ -23,7 +23,7 @@ module.exports = {
       if (diffKeys.length > 1) {
         const message = "[cms-signup]:missing properties";
         log.warn(message);
-        res.status(405).json({ message, missing: diffKeys });
+        res.status(400).json({ message, missing: diffKeys });
         return;
       }
 
@@ -268,6 +268,7 @@ module.exports = {
   ],
   "verify-token": [
     verifyingToken,
+    checkStatus,
     async (req, res, next) => {
       if (req.method !== "GET") {
         const message = "[verify-token]:invalid method";
@@ -279,12 +280,34 @@ module.exports = {
       if (!req.user) {
         const message = "[verify-token]:empty user info";
         log.warn(message);
-        res.status(405).json({ message });
+        res.status(400).json({ message });
         return;
       }
 
       const payload = Object.assign({}, req.user);
       res.status(200).json({ payload });
+    }
+  ],
+  "verify-user": [
+    verifyingToken,
+    async (req, res, next) => {
+      if (req.method !== "GET") {
+        const message = "[verify-user]:invalid method";
+        log.warn(message);
+        res.status(405).json({ message });
+        return;
+      }
+
+      if (!req.user || !req.userDetails) {
+        const message = "[verify-user]:empty user info";
+        log.warn(message);
+        res.status(400).json({ message });
+        return;
+      }
+    
+      await req.userDetails.update({ StatusId: 2 });
+
+      res.status(200).json({ message: "user verified!" });
     }
   ],
   "change-password": [
@@ -300,7 +323,7 @@ module.exports = {
       if (!req.user) {
         const message = "[change-password]:empty user info";
         log.warn(message);
-        res.status(405).json({ message });
+        res.status(400).json({ message });
         return;
       }
       

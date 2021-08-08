@@ -27,7 +27,9 @@ const cmsAuthorize = (req, res, next) => {
 }
 
 const verifyingToken = async (req, res, next) => {
-  const accessToken = _.get(req, "headers.authorization", "");
+  const paramToken = _.get(req, "query.auth", "");
+  const headerToken = _.get(req, "headers.authorization", "");
+  const accessToken = req.params.routePath === "verify-user" ? paramToken : headerToken;
   if (!accessToken) {
     const message = "token not found";
     log.warn(message);
@@ -62,6 +64,25 @@ const verifyingToken = async (req, res, next) => {
   }
 
   req.user = Object.assign({}, verified);
+  req.userDetails = userFound;
+
+  next();
+}
+
+const checkStatus = (req, res, next) => {
+  if (!req.user || !req.userDetails) {
+    const message = "empty user info";
+    log.warn(message);
+    res.status(400).json({ message });
+    return;
+  }
+
+  if (req.user.status === req.userDetails.status && req.user.status === "blocked") {
+    const message = "user is blocked";
+    log.warn(message);
+    res.status(401).json({ message });
+    return;
+  }
 
   next();
 }
@@ -69,4 +90,5 @@ const verifyingToken = async (req, res, next) => {
 module.exports = {
   cmsAuthorize,
   verifyingToken,
+  checkStatus,
 }
