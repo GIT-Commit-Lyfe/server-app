@@ -305,6 +305,10 @@ module.exports = {
         return;
       }
     
+      if (req.userDetails.status === "verified") {
+        res.status(200).json({ message: "user already verified!" });
+        return;
+      };
       await req.userDetails.update({ StatusId: 2 });
 
       res.status(200).json({ message: "user verified!" });
