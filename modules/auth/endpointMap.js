@@ -1,5 +1,6 @@
 const _ = require("lodash");
 const passport = require("passport");
+const cuid = require("cuid");
 const log = require("../../utils/log");
 const { cmsAuthorize, verifyingToken, checkStatus } = require("./middleware");
 const { verifyPassword, generateToken } = require("./helpers");
@@ -30,7 +31,7 @@ module.exports = {
       try {
         await createAdmin(payload);
         res.status(200).json({ message: "admin created" });
-      } catch(err) {
+      } catch (err) {
         if (err.name === "SequelizeValidationError") {
           const reasons = err.message.replace(/Validation error: /g, "").split("\n");
           const message = "[cms-signup]:ValidationError";
@@ -106,7 +107,7 @@ module.exports = {
 
         const token = generateToken(payload);
         res.status(200).json({ token });
-      } catch(err) {
+      } catch (err) {
         const message = "[cms-login]:internal server error";
         log.error(message);
         log.error(err.message);
@@ -166,7 +167,7 @@ module.exports = {
 
         const token = generateToken(payload);
         res.status(200).json({ token });
-      } catch(err) {
+      } catch (err) {
         const message = "[app-login]:internal server error";
         log.error(message);
         log.error(err.message);
@@ -200,7 +201,7 @@ module.exports = {
 
         const token = generateToken(payload);
         res.status(200).json({ token });
-      } catch(err) {
+      } catch (err) {
         const message = "[app-signup]:internal server error";
         log.error(message);
         log.error(err.message);
@@ -257,7 +258,7 @@ module.exports = {
 
         const token = generateToken(tokenPayload);
         res.status(200).json({ token });
-      } catch(err) {
+      } catch (err) {
         const message = "[app-onboard]:internal server error";
         log.error(message);
         log.error(err.message);
@@ -364,7 +365,48 @@ module.exports = {
         await userFound.update({ passwordUpdated: true });
 
         res.status(200).json({ message: "password updated" });
-      } catch(err) {
+      } catch (err) {
+        const message = "[cms-login]:internal server error";
+        log.error(message);
+        log.error(err.message);
+        log.error(err);
+        res.status(500).json({ message });
+      }
+    }
+  ],
+  "reset-password": [
+    async (req, res, next) => {
+      if (req.method !== "POST") {
+        const message = "[reset-password]:invalid method";
+        log.warn(message);
+        res.status(405).json({ message });
+        return;
+      }
+
+      const { email } = req.body;
+      if (!email) {
+        const message = "[reset-password]:undefined email";
+        log.warn(message)
+        res.status(400).json({ message });
+        return;
+      }
+
+      try {
+        const userFound = await findUserByEmail(email);
+        if (!userFound) {
+          const message = "[reset-password]:email never registered";
+          log.warn(message)
+          res.status(400).json({ message });
+          return;
+        }
+
+        const newPassword = cuid();
+        await changePassword(userFound, newPassword);
+        // will be used in middleware verifying token check if password updated
+        await userFound.update({ passwordUpdated: true });
+
+        res.status(200).json({ message: `password resetted, new password: ${newPassword}, please save it somewhere!` });
+      } catch (err) {
         const message = "[cms-login]:internal server error";
         log.error(message);
         log.error(err.message);
