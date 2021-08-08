@@ -27,8 +27,8 @@ async function findUserByUsername(username) {
     where: {
       username,
     }, 
-    include: [{ all: true }]
-  })
+    include: [{ all: true }],
+  });
 
   if (!userFound) {
     return;
@@ -55,9 +55,8 @@ async function findUserByEmail(email) {
     where: {
       email,
     }, 
-  }, {
-    include: [{ all: true }]
-  })
+    include: [{ all: true }],
+  });
 
   if (!userFound) {
     return;
@@ -109,9 +108,8 @@ async function updateUserByEmail(email, payload) {
     where: {
       email,
     },
-  }, {
-    include: [{ all: true }]
-  })
+    include: [{ all: true }],
+  });
 
   if (!userFound) {
     return;
