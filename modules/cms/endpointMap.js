@@ -2,7 +2,7 @@ const _ = require("lodash");
 const log = require("../../utils/log");
 const models = require("../../models");
 const validator = require("../../middleware/fileValidator/validator.json");
-const { findAll, findOneByPK, createOne, updateOneByPK, deleteOneByPK, demigrate } = require("./controller");
+const { findAll, findOneByPK, createOne, updateOneByPK, deleteOneByPK, deleteMultipleByPK, demigrate } = require("./controller");
 const { cmsAuthorize } = require("../auth/middleware");
 
 module.exports = {
@@ -98,10 +98,30 @@ module.exports = {
           }
           return;
         case "DELETE":
+          const { multiple } = req.query;
+          const isBulkDelete = multiple === "1";
+
           if (!id) {
             const message = "[cms]:no id defined";
             log.error(message);
             res.status(404).json({ message });
+            return;
+          }
+
+          if (isBulkDelete) {
+            try {
+              const deletedIds = await deleteMultipleByPK(routeId + `${routeId[routeId.length-1] === "s" ? "e" : ""}s`, { id });
+              const message = "data with these ids deleted.";
+              log.info(message);
+              log.info(deletedIds);
+              res.status(200).json({ message, ids: deletedIds });
+            } catch(err) {
+              const message = "[cms]:internal server error";
+              log.error(message);
+              log.error(err.message);
+              log.error(err);
+              res.status(500).json({ message });
+            }
             return;
           }
           try {

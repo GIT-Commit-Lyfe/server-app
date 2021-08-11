@@ -81,11 +81,20 @@ async function deleteOneByPK(table, { id }) {
   return deleted;
 }
 
+async function deleteMultipleByPK(table, { id }) {
+  const ids = id.split(",");
+  const { Op } = Sequelize;
+  const deletedOnes = await sequelize.queryInterface.bulkDelete(table, {id: {[Op.in]: ids}}, {})
+
+  return deletedOnes;
+}
+
 module.exports = {
   findAll,
   findOneByPK,
   createOne,
   updateOneByPK,
   deleteOneByPK,
+  deleteMultipleByPK,
   demigrate,
 }
