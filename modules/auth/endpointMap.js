@@ -7,6 +7,34 @@ const { verifyPassword, generateToken } = require("./helpers");
 const { createAdmin, findUserByUsername, findUserByEmail, signUpUser, updateUserByEmail, changePassword } = require("./controller");
 
 module.exports = {
+  "get-token": [
+    (req, res, next) => {
+      if (req.method !== "GET") {
+        const message = "[get-token]:invalid method";
+        log.warn(message);
+        res.status(405).json({ message });
+        return;
+      }
+
+      const { tokenType } = req.query;
+      let token;
+      switch (tokenType) {
+        case "cms":
+          token = process.env.CMS_TOKEN;
+          break;
+        default:
+          break;
+      }
+
+      if (!token) {
+        const message = "[get-token]:undefined type";
+        log.warn(message);
+        res.status(400).json({ message });
+        return;
+      }
+      res.status(200).json({ token });
+    }
+  ],
   "cms-signup": [
     passport.authenticate("basic", { session: false }),
     async (req, res, next) => {
