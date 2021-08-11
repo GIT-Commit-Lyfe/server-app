@@ -1,4 +1,4 @@
-const { PGUSERNAME, PGPASSWORD, PGDB, PGHOST, PGPORT } = process.env;
+const { PGUSERNAME, PGPASSWORD, PGDB, PGHOST, PGPORT, NODE_ENV } = process.env;
 
 const config = {
   username: PGUSERNAME,
@@ -10,7 +10,8 @@ const config = {
   dialectOptions: {
     encrypt: true,
     requestTimeout: 120000,
-  }
+  },
+  logging: NODE_ENV === "development"
 }
 
 module.exports = {
