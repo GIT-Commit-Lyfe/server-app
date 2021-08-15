@@ -78,11 +78,12 @@ module.exports = {
             res.status(404).json({ message });
             return;
           }
-          const validToUpdate = _.intersection(formKeys, ["id", ...ref]).length === formKeys.length;
+          const validToUpdate = _.intersection(formKeys, ref).length === formKeys.length;
           if (!validToUpdate) {
             const message = "[cms]:no valid data";
             log.error(message);
             res.status(404).json({ message });
+            return;
           }
           try {
             const updatedOne = await updateOneByPK(routeId, { id, form });
