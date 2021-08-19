@@ -40,22 +40,22 @@ async function demigrate(model) {
 }
 
 async function findAll(table) {
-  const list = await models[table].findAll();
+  const list = await models[table].findAll({ include: [{ all: true }] });
   const parsed = _.map(list, (model) => parsedModelToObject(table, model));
 
   return parsed;
 }
 
 async function findOneByPK(table, { id }) {
-  const model = await models[table].findByPk(id);
+  const model = await models[table].findByPk(id, { include: [{ all: true }] });
   const parsed = parsedModelToObject(table, model);
 
   return parsed;
 }
 
 async function createOne(table, form) {
-  const created = await models[table].create(form);
-  const parsed = parsedModelToObject(table, created);
+  const created = await models[table].create(form, { include: [{ all: true }] });
+  const parsed = await findOneByPK(table, { id: created.id });
 
   return parsed;
 }
