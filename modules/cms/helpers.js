@@ -7,7 +7,12 @@ function parsedModelToObject(table, model) {
   }
 
   const parsed = Object.assign({}, _.pick(model, ["id", ...validator[table], "createdAt", "updatedAt"]));
-
+  
+  const populatedFields = _.filter(validator[table], (item) => /Id/.test(item));
+  const mappedpopulatedFields = _.map(populatedFields, (item) => item.replace(/Id/, ""));
+  mappedpopulatedFields.forEach(item => {
+    parsed[item] = _.get(model, `[${item}].name`, "");
+  })
   return parsed;
 }
 
