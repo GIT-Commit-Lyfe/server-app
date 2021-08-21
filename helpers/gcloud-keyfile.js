@@ -1,0 +1,24 @@
+const {
+  GAPI_KEY_TYPE,
+  GAPI_KEY_PROJECT_ID,
+  GAPI_KEY_PRIVATE_KEY_ID,
+  GAPI_KEY_PRIVATE_KEY,
+  GAPI_KEY_CLIENT_EMAIL,
+  GAPI_KEY_CLIENT_ID,
+  GAPI_KEY_AUTH_URI,
+  GAPI_KEY_TOKEN_URI,
+  GAPI_KEY_AUTH_PROVIDER_X509_CERT_URL,
+  GAPI_KEY_CLIENT_X509_CERT_URL,
+} = process.env;
+module.exports = {
+  type: GAPI_KEY_TYPE,
+  project_id: GAPI_KEY_PROJECT_ID,
+  private_key_id: GAPI_KEY_PRIVATE_KEY_ID,
+  private_key: GAPI_KEY_PRIVATE_KEY,
+  client_email: GAPI_KEY_CLIENT_EMAIL,
+  client_id: GAPI_KEY_CLIENT_ID,
+  auth_uri: GAPI_KEY_AUTH_URI,
+  token_uri: GAPI_KEY_TOKEN_URI,
+  auth_provider_x509_cert_url: GAPI_KEY_AUTH_PROVIDER_X509_CERT_URL,
+  client_x509_cert_url: GAPI_KEY_CLIENT_X509_CERT_URL,
+}
