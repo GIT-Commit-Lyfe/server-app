@@ -35,8 +35,8 @@ async function demigrate(model) {
     } catch(error) {
       log.warn("Failed demigrating -> " + file);
     }
-    log.info("All done!");
   });
+  log.info("All done!");
 }
 
 async function findAll(table) {
