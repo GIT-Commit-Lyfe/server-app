@@ -3,7 +3,7 @@ const { Storage } = require('@google-cloud/storage');
 const log = require('../utils/log');
 const asyncForEach = require('../utils/asyncForEach');
 const gc = new Storage({
-  keyFilename: path.join(__dirname, '/' + process.env.GAPI_CREDENTIALS),
+  keyFilename: path.join(__dirname, process.env.GAPI_CREDENTIALS),
   projectId: process.env.GAPI_PROJECT_ID
 });
 const bucket = gc.bucket(process.env.GAPI_BUCKET_NAME);
@@ -26,11 +26,11 @@ function uploadFile(fileObj, folder = "general") {
       reject(err);
     }
 
-    const fileName = folder + "/" + Date.now() + fileObj.originalname ? `_${fileObj.originalname}` : "";
+    const fileName = folder + "/" + Date.now() + (fileObj.originalname ? `_${fileObj.originalname}` : "");
     const file = bucket.file(fileName);
     const stream = file.createWriteStream({
       metadata: {
-        contentType: file.mimetype
+        contentType: fileObj.mimetype
       }
     })
   
@@ -44,7 +44,7 @@ function uploadFile(fileObj, folder = "general") {
           resolve(publicURL);
         })
     })
-    stream.end(file.buffer);
+    stream.end(fileObj.buffer);
   })
 }
 
