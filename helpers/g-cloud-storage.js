@@ -9,7 +9,12 @@ const gc = new Storage({
 const bucket = gc.bucket(process.env.GAPI_BUCKET_NAME);
 
 function getPublicURL(fileName) {
-  return `https://storage.googleapis.com/${process.env.GAPI_BUCKET_NAME}/${fileName}`
+  return `https://storage.googleapis.com/${process.env.GAPI_BUCKET_NAME}/${fileName}`;
+}
+
+function getBlobName(url) {
+  const bucketURL = `https://storage.googleapis.com/${process.env.GAPI_BUCKET_NAME}/`;
+  return url.replace(bucketURL, "");
 }
 
 function uploadFile(fileObj, folder = "general") {
@@ -60,8 +65,15 @@ async function uploadFiles(files, folder) {
   }
 }
 
+async function deleteFile(url) {
+  const blobName = getBlobName(url);
+  const file = bucket.file(blobName);
+  await file.delete();
+}
+
 module.exports = {
   bucket,
   uploadFile,
   uploadFiles,
+  deleteFile,
 }
