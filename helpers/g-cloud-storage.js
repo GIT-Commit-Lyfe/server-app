@@ -68,7 +68,7 @@ async function uploadFiles(files, folder) {
 async function deleteFile(url) {
   const blobName = getBlobName(url);
   const file = bucket.file(blobName);
-  await file.delete();
+  return await file.delete();
 }
 
 module.exports = {
