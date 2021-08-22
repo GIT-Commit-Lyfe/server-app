@@ -1,15 +1,15 @@
 const { deleteFile } = require("../helpers/g-cloud-storage");
 module.exports = async (req, res, next) => {
-  const { url } = req.body;
-  if (url) {
-    if (Array.isArray(url)) {
-      const allString = url.every((item) => typeof item === "string");
+  const { pastUrl } = req.body;
+  if (pastUrl) {
+    if (Array.isArray(pastUrl)) {
+      const allString = pastUrl.every((item) => typeof item === "string");
       if (allString) {
-        const promises = url.map(item => deleteFile(item));
+        const promises = pastUrl.map(item => deleteFile(item));
         Promise.all(promises);
       }
-    } else if (typeof url === "string") {
-      deleteFile(url);
+    } else if (typeof pastUrl === "string") {
+      deleteFile(pastUrl);
     }
   }
   next();
