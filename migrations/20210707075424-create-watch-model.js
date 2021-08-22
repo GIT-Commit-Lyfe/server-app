@@ -11,6 +11,9 @@ module.exports = {
       referenceNumber: {
         type: Sequelize.STRING
       },
+      modelImage: {
+        type: Sequelize.STRING
+      },
       caseMaterial: {
         type: Sequelize.STRING
       },
