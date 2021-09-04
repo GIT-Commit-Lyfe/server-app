@@ -10,7 +10,7 @@
   "DialMaterial": [ "name" ],
   "BraceletMaterial": [ "name" ],
   "WatchFunction": [ "name" ],
-  "WatchModel": [ "referenceNumber", "caseMaterial", "caseDiameter", "caseThickness", "waterResistance", "glass", "streetName", "lugWidth", "introducedAt", "discontinuedAt", "powerReserved", "numberOfJewel", "dialNumeral", "otherInfo", "CollectionId", "CaliberId", "MovementId", "BezelMaterialId", "DialMaterialId", "BraceletMaterialId", "BraceletColorId", "ClaspId", "ClaspMateralId", "WatchFunctionId" ],
+  "WatchModel": [ "referenceNumber", "modelImage", "caseMaterial", "caseDiameter", "caseThickness", "waterResistance", "glass", "streetName", "lugWidth", "introducedAt", "discontinuedAt", "powerReserved", "numberOfJewel", "dialNumeral", "otherInfo", "CollectionId", "CaliberId", "MovementId", "BezelMaterialId", "DialMaterialId", "BraceletMaterialId", "BraceletColorId", "ClaspId", "ClaspMateralId", "WatchFunctionId" ],
   "Condition": [ "name" ],
   "Accompany": [ "name" ],
   "ProductStatus": [ "name" ],
