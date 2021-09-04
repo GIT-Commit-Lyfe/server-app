@@ -53,12 +53,13 @@ module.exports = {
           return;
         case "POST":
           const validToCreate = _.isEqual(formKeys, ref) || _.isEqual(formKeys, ["id", ...ref]);
-          if (!validToCreate) {
-            const message = "[cms]:no valid data";
-            log.error(message);
-            res.status(404).json({ message });
-            return;
-          }
+          // TODO: uncomment these when validation reenabled
+          // if (!validToCreate) {
+          //   const message = "[cms]:no valid data";
+          //   log.error(message);
+          //   res.status(404).json({ message });
+          //   return;
+          // }
 
           try {
             const created = await createOne(routeId, form);
