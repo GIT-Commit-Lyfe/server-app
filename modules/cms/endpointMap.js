@@ -52,8 +52,8 @@ module.exports = {
           }
           return;
         case "POST":
-          const validToCreate = _.isEqual(formKeys, ref) || _.isEqual(formKeys, ["id", ...ref]);
           // TODO: uncomment these when validation reenabled
+          // const validToCreate = _.isEqual(formKeys, ref) || _.isEqual(formKeys, ["id", ...ref]);
           // if (!validToCreate) {
           //   const message = "[cms]:no valid data";
           //   log.error(message);
