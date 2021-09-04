@@ -60,9 +60,10 @@ module.exports = {
           //   res.status(404).json({ message });
           //   return;
           // }
+          const validForm = _.pick(form, ["id", ...ref]);
 
           try {
-            const created = await createOne(routeId, form);
+            const created = await createOne(routeId, validForm);
             const message = `data id:${created.id} added to ${routeId} table.`;
             log.info(message);
             res.status(200).json(created);
