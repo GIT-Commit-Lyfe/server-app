@@ -19,7 +19,9 @@ module.exports = async function (req, res, next) {
     res.status(404).json({ message });
     return;
   }
-  const csv = req.file.buffer.toString().replace("﻿", ""); // dapet dari req.file (multer.single)
+  let csv = req.file.buffer.toString().replace("﻿", ""); // dapet dari req.file (multer.single)
+  const lastCsvStringNewLine = _.last(csv) === "\n";
+  csv = lastCsvStringNewLine ? csv.substring(0, csv.length - 1) : csv;
   try {
     const result = await Papa.parse(csv, { header: true })
     const rawJSON = result.data;
