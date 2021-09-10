@@ -19,9 +19,10 @@ module.exports = async function (req, res, next) {
     res.status(404).json({ message });
     return;
   }
-  const csv = req.file.buffer.toString(); // dapet dari req.file (multer.single)
+  const csv = req.file.buffer.toString().replace("﻿", ""); // dapet dari req.file (multer.single)
   try {
-    const rawJSON = (await Papa.parse(csv, { header: true })).data;
+    const result = await Papa.parse(csv, { header: true })
+    const rawJSON = result.data;
     const isEmpty = _.isEmpty(rawJSON);
     
     if (isEmpty) {
@@ -31,8 +32,8 @@ module.exports = async function (req, res, next) {
       return;
     }
   
-    const firstRowKeys = Object.keys(rawJSON[0]);
-    const validated = _.isEqual(firstRowKeys, data);
+    const fields = _.get(result, "meta.fields", []);
+    const validated = _.isEqual(fields, data);
     
     if (!validated) {
       const message = "[seeding]:data invalid";
