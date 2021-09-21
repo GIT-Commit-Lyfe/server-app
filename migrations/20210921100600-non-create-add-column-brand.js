@@ -7,7 +7,7 @@ module.exports = {
     });
     await queryInterface.addColumn("Brands", "description", {
       allowNull: true,
-      type: Sequelize.STRING(510),
+      type: Sequelize.STRING(2040),
     });
     await queryInterface.addColumn("Brands", "logoImage", {
       allowNull: true,
