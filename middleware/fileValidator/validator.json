@@ -1,5 +1,5 @@
 {
-  "Brand": [ "name", "description", "logoImage" ],
+  "Brand": [ "name", "site", "description", "logoImage" ],
   "Collection": [ "name", "BrandId" ],
   "Caliber": [ "name", "BrandId" ],
   "BraceletColor": [ "name" ],
