@@ -8,24 +8,32 @@ const { sequelize, Sequelize } = require(__dirname + "/../../db/sequelize");
 const log = require(__dirname + "/../../utils/log");
 const asyncForEach = require(__dirname + "/../../utils/asyncForEach");
 
-async function demigrate(model) {
+async function demigrate(model, { raw } = { raw: false }) {
   const migrationsPath = __dirname + "/../../migrations";
   const migrationFiles = fs.readdirSync(migrationsPath);
 
-  if (model) {
+  if (raw) {
+    log.info(`Raw migration defined. Processing demigration ${model} file...`);
+  } else if (model) {
     log.info(`Model defined. Processing demigration (model:${model}) single file...`);
   } else {
     log.info("Processing demigration files...");
   }
   await asyncForEach(migrationFiles, async (file) => {
-    if (!file.includes("create")) {
-      return;
-    }
+    if (!raw) {
+      if (!file.includes("create")) {
+        return;
+      }
 
-    const modelFile = file.replace(".js", "").split("-").slice(2).join("-");
-
-    if (model && modelFile !== model) {
-      return;
+      const modelFile = file.replace(".js", "").split("-").slice(2).join("-");
+      if (model && modelFile !== model) {
+        return;
+      }
+    } else {
+      const modelFile = file.replace(".js", "");
+      if (model !== modelFile) {
+        return;
+      }
     }
     log.info("Demigrating -> " + file);
     const migration = require(path.join(migrationsPath, file));
@@ -34,6 +42,9 @@ async function demigrate(model) {
       log.info("Demigration done! " + file);
     } catch(error) {
       log.warn("Failed demigrating -> " + file);
+      if (error.message) {
+        log.warn(error.message);
+      }
     }
   });
   log.info("All done!");

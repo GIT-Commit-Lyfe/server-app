@@ -165,5 +165,28 @@ module.exports = {
       const message = "done";
       res.status(200).json({ message });
     }
-  ]
+  ],
+  "demigrate": [
+    cmsAuthorize,
+    async (req, res, next) => {
+      if (req.method !== "POST") {
+        const message = "[demigrate]:invalid method";
+        log.warn(message);
+        res.status(405).json({ message });
+        return;
+      }
+
+      const { routeId } = req.params;
+      if (!routeId) {
+        const message = "[demigrate]:file name not defined";
+        log.warn(message);
+        res.status(400).json({ message });
+        return;
+      }
+
+      await demigrate(routeId, { raw: true });
+      const message = "done";
+      res.status(200).json({ message });
+    }
+  ],
 }
