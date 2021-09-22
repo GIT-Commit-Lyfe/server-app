@@ -55,6 +55,7 @@ async function multiDelete(urls = [], { deleteData, urlObj } = { deleteData: fal
       }
     })
     
+    log.info(`Deleting URLs done!`);
     const result = {
       error: false,
     }
