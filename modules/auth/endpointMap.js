@@ -2,7 +2,7 @@ const _ = require("lodash");
 const passport = require("passport");
 const cuid = require("cuid");
 const log = require("../../utils/log");
-const { cmsAuthorize, verifyingToken, checkStatus } = require("./middleware");
+const { cmsAuthorize, verifyingToken, authenticate } = require("./middleware");
 const { verifyPassword, generateToken } = require("./helpers");
 const { createAdmin, findUserByUsername, findUserByEmail, signUpUser, updateUserByEmail, changePassword } = require("./controller");
 
@@ -317,8 +317,7 @@ module.exports = {
     }
   ],
   "verify-token": [
-    verifyingToken,
-    checkStatus,
+    ...authenticate,
     async (req, res, next) => {
       if (req.method !== "GET") {
         const message = "[verify-token]:invalid method";
