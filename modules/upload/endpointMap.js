@@ -38,7 +38,7 @@ module.exports = {
       if (!url) {
         const message = "[delete-upload]:url not found";
         log.warn(message);
-        res.status(405).json({ message });
+        res.status(400).json({ message });
         return;
       }
       try {
@@ -66,7 +66,7 @@ module.exports = {
       if (!Array.isArray(urls)) {
         const message = "[multi-delete-upload]:urls must be in array of url string";
         log.warn(message);
-        res.status(405).json({ message });
+        res.status(400).json({ message });
         return;
       }
       
@@ -74,7 +74,7 @@ module.exports = {
       if (!allString) {
         const message = "[multi-delete-upload]:url element must be string";
         log.warn(message);
-        res.status(405).json({ message });
+        res.status(400).json({ message });
         return;
       }
       
