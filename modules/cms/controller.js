@@ -1,5 +1,6 @@
 const _ = require("lodash");
-const models, { Audit } = require("../../models");
+const models = require("../../models");
+const { Audit } = models;
 const { parsedModelToObject, parseAuditModel } = require("./helpers");
 
 const fs = require('fs');
