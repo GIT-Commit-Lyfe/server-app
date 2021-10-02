@@ -136,6 +136,38 @@ async function createAudit(table, { data, userId, status}) {
   return parsed;
 }
 
+async function patchAuthorToModels(table, models) {
+  const dataIds = models.map(model => model.id);
+  const auditDatalist = await Audit.findAll({
+    where: {
+      table,
+      data: {
+        [Op.in]: dataIds,
+      },
+    },
+    order: [
+      ["createdAt", "DESC"], // we only need to take the latest author update
+    ],
+    include: [{ all: true }]
+  })
+    .catch(err => {
+      const message = `[patch-author]: ${table}`;
+      log.error(message);
+      log.error(err.message);
+      log.error(err);
+      models.forEach(model => {
+        model[author] = "";
+      })
+    })
+  const auditDatalistGrouped = _.groupBy(auditDatalist, (item) => item.data);
+  const auditDatalistGroupedMapped = _.mapValues(auditDatalistGrouped, (val) => val[0]);
+
+  models.forEach(model => {
+    const author = _.get(auditDatalistGroupedMapped[model.id], "author", "");
+    model[author] = author;
+  })
+}
+
 module.exports = {
   findAll,
   findOneByPK,
@@ -146,4 +178,5 @@ module.exports = {
   demigrate,
   audit,
   auditStatus,
+  patchAuthorToModels,
 }

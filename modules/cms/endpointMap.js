@@ -2,7 +2,7 @@ const _ = require("lodash");
 const log = require("../../utils/log");
 const models = require("../../models");
 const validator = require("../../middleware/fileValidator/validator.json");
-const { findAll, findOneByPK, createOne, updateOneByPK, deleteOneByPK, deleteMultipleByPK, demigrate, audit, auditStatus } = require("./controller");
+const { findAll, findOneByPK, createOne, updateOneByPK, deleteOneByPK, deleteMultipleByPK, demigrate, audit, auditStatus, patchAuthorToModels } = require("./controller");
 const { cmsAuthorize, authenticate } = require("../auth/middleware");
 
 module.exports = {
@@ -25,6 +25,9 @@ module.exports = {
           if (id) {
             try {
               const foundOne = await findOneByPK(routeId, { id });
+              if (foundOne) {
+                await patchAuthorToModels(routeId, [foundOne]);
+              }
               const message = foundOne ? `data id:${foundOne.id} found in ${routeId} table.` : `id:${id} not found in ${routeId} table.`;
               log.info(message);
               res.status(200).json(foundOne);
@@ -39,6 +42,9 @@ module.exports = {
           }
           try {
             const foundList = await findAll(routeId);
+            if (foundList.length > 0) {
+              await patchAuthorToModels(routeId, foundList);
+            }
             const message = `${foundList.length} data found in ${routeId} table.`;
             log.info(message);
             res.status(200).json(foundList);
