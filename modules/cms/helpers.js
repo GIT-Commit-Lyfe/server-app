@@ -16,6 +16,14 @@ function parsedModelToObject(table, model) {
   return parsed;
 }
 
+function parseAuditModel(model) {
+  const parsed = Object.assign({}, _.pick(model, ["id", ...validator["Audit"], "createdAt", "updatedAt"]));
+  parsed.author =  _.get(model, "User.email", "");
+
+  return parsed;
+}
+
 module.exports = {
   parsedModelToObject,
+  parseAuditModel,
 }

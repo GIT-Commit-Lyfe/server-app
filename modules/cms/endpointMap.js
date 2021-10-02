@@ -2,9 +2,8 @@ const _ = require("lodash");
 const log = require("../../utils/log");
 const models = require("../../models");
 const validator = require("../../middleware/fileValidator/validator.json");
-const { findAll, findOneByPK, createOne, updateOneByPK, deleteOneByPK, deleteMultipleByPK, demigrate } = require("./controller");
+const { findAll, findOneByPK, createOne, updateOneByPK, deleteOneByPK, deleteMultipleByPK, demigrate, audit, auditStatus } = require("./controller");
 const { cmsAuthorize, authenticate } = require("../auth/middleware");
-const deleteUpload = require("../../middleware/deleteUpload");
 
 module.exports = {
   cms: [
@@ -64,6 +63,7 @@ module.exports = {
 
           try {
             const created = await createOne(routeId, validForm);
+            await audit(req.userDetails.id, routeId, created, auditStatus.CREATED);
             const message = `data id:${created.id} added to ${routeId} table.`;
             log.info(message);
             res.status(200).json(created);
@@ -91,6 +91,7 @@ module.exports = {
           }
           try {
             const updatedOne = await updateOneByPK(routeId, { id, form });
+            await audit(req.userDetails.id, routeId, updatedOne, auditStatus.UPDATED);
             const message = updatedOne ? `data id:${updatedOne.id} updated to ${routeId} table.` : `id:${id} not found in ${routeId} table.`;
             log.info(message);
             res.status(200).json(updatedOne);
@@ -116,6 +117,9 @@ module.exports = {
           if (isBulkDelete) {
             try {
               const deletedIds = await deleteMultipleByPK(routeId + `${routeId[routeId.length-1] === "s" ? "e" : ""}s`, { id });
+              deletedIds.forEach(id => {
+                audit(req.userDetails.id, routeId, { id }, auditStatus.DELETED);
+              });
               const message = "data with these ids deleted.";
               log.info(message);
               log.info(deletedIds);
@@ -131,6 +135,7 @@ module.exports = {
           }
           try {
             const deletedOne = await deleteOneByPK(routeId, { id });
+            await audit(req.userDetails.id, routeId, deletedOne, auditStatus.DELETED);
             const message = deletedOne ? `data id:${deletedOne.id} deleted from ${routeId} table.` : `id:${id} not found in ${routeId} table.`;
             log.info(message);
             res.status(200).json(deletedOne);
