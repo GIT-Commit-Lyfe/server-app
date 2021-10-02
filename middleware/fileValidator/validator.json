@@ -1,4 +1,5 @@
 {
+  "Audit": [ "table", "data", "status", "UserId" ],
   "Brand": [ "name", "site", "description", "logoImage" ],
   "Collection": [ "name", "BrandId" ],
   "Caliber": [ "name", "BrandId" ],
