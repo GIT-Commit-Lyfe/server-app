@@ -3,12 +3,12 @@ const log = require("../../utils/log");
 const models = require("../../models");
 const validator = require("../../middleware/fileValidator/validator.json");
 const { findAll, findOneByPK, createOne, updateOneByPK, deleteOneByPK, deleteMultipleByPK, demigrate } = require("./controller");
-const { cmsAuthorize } = require("../auth/middleware");
+const { cmsAuthorize, authenticate } = require("../auth/middleware");
 const deleteUpload = require("../../middleware/deleteUpload");
 
 module.exports = {
   cms: [
-    deleteUpload,
+    ...authenticate,
     async (req, res, next) => {
       const { routeId } = req.params;
       if (!models[routeId]) {
