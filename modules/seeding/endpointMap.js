@@ -9,9 +9,11 @@ module.exports = {
     multer.single('file'),
     fileValidator,
     async (req, res, next) => {
-      await sequelize.queryInterface.bulkInsert(routeId + `${routeId[routeId.length-1] === "s" ? "e" : ""}s`, req.seedJSON);
+      const status = await sequelize.queryInterface.bulkInsert(routeId + `${routeId[routeId.length-1] === "s" ? "e" : ""}s`, req.seedJSON);
       log.info(`${req.seedJSON.length} data seeded to ${routeId}`);
-      
+      log.info("Status:");
+      log.info(status);
+
       const message = `data seeded!`
       res.status(200).json({ message });
     }
