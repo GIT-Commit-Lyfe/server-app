@@ -42,13 +42,15 @@ module.exports = async function (req, res, next) {
       res.status(400).json({ message });
       return;
     }
-  
+    
+    const now = new Date();
     req.seedJSON = rawJSON.map((item) => ({
       ...item,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      createdAt: now,
+      updatedAt: now
     }));
-
+    req.seedingTime = now;
+    
     next();
   } catch(err) {
     const message = "[seeding]:internal server error";
