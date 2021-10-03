@@ -8,6 +8,7 @@ const path = require('path');
 const { sequelize, Sequelize } = require(__dirname + "/../../db/sequelize");
 const log = require(__dirname + "/../../utils/log");
 const asyncForEach = require(__dirname + "/../../utils/asyncForEach");
+const { Op } = Sequelize;
 
 async function demigrate(model, { raw } = { raw: false }) {
   const migrationsPath = __dirname + "/../../migrations";
@@ -65,7 +66,7 @@ async function findOneByPK(table, { id }) {
   return parsed;
 }
 
-async function createOne(table, form, userId) {
+async function createOne(table, form) {
   const created = await models[table].create(form);
   const parsed = await findOneByPK(table, { id: created.id });
 
@@ -95,7 +96,6 @@ async function deleteOneByPK(table, { id }) {
 
 async function deleteMultipleByPK(table, { id }) {
   const ids = id.split(",");
-  const { Op } = Sequelize;
   const deletedOnes = await sequelize.queryInterface.bulkDelete(table, {id: {[Op.in]: ids}}, {})
 
   return deletedOnes;
@@ -109,8 +109,8 @@ const auditStatus = {
   DELETED: "deleted",
 }
 
-async function audit(userId, table, model, status) {
-  const auditData = { data: model.id, userId, status };
+async function audit(UserId, table, model, status) {
+  const auditData = { data: model.id, UserId, status };
   const auditResult = await createAudit(table, auditData)
     .catch(err => {
       const dataStringified = JSON.stringify(auditData, null, 2);
@@ -123,12 +123,12 @@ async function audit(userId, table, model, status) {
   model["author"] = auditResult.author;
 }
 
-async function createAudit(table, { data, userId, status}) {
+async function createAudit(table, { data, UserId, status}) {
   const form = {
     table,
     data,
     status,
-    userId,
+    UserId,
   };  
   const created = await Audit.create(form);
   const model = await Audit.findByPk(created.id, { include: [{ all: true }] });
@@ -161,11 +161,11 @@ async function patchAuthorToModels(table, models) {
       })
     })
   const auditDatalistGrouped = _.groupBy(auditDatalist, (item) => item.data);
-  const auditDatalistGroupedMapped = _.mapValues(auditDatalistGrouped, (val) => val[0]);
+  const auditDatalistGroupedMapped = _.mapValues(auditDatalistGrouped, (val) => parseAuditModel(val[0]));
 
   models.forEach(model => {
-    const author = _.get(auditDatalistGroupedMapped[model.id], "author", "");
-    model[author] = author;
+    const author = _.get(auditDatalistGroupedMapped[model.id], "author", "annonymous");
+    model["author"] = author;
   })
 }
 

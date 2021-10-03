@@ -122,14 +122,15 @@ module.exports = {
 
           if (isBulkDelete) {
             try {
-              const deletedIds = await deleteMultipleByPK(routeId + `${routeId[routeId.length-1] === "s" ? "e" : ""}s`, { id });
-              deletedIds.forEach(id => {
+              const status = await deleteMultipleByPK(routeId + `${routeId[routeId.length-1] === "s" ? "e" : ""}s`, { id });
+              const ids = id.split(",");
+              ids.forEach(id => {
                 audit(req.userDetails.id, routeId, { id }, auditStatus.DELETED);
               });
               const message = "data with these ids deleted.";
               log.info(message);
-              log.info(deletedIds);
-              res.status(200).json({ message, ids: deletedIds });
+              log.info(ids);
+              res.status(200).json({ message, ids, status });
             } catch(err) {
               const message = "[cms]:internal server error";
               log.error(message);
