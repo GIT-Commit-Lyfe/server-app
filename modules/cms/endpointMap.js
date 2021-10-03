@@ -97,7 +97,9 @@ module.exports = {
           }
           try {
             const updatedOne = await updateOneByPK(routeId, { id, form });
-            await audit(req.userDetails.id, routeId, updatedOne, auditStatus.UPDATED);
+            if (updatedOne) {
+              await audit(req.userDetails.id, routeId, updatedOne, auditStatus.UPDATED);
+            }
             const message = updatedOne ? `data id:${updatedOne.id} updated to ${routeId} table.` : `id:${id} not found in ${routeId} table.`;
             log.info(message);
             res.status(200).json(updatedOne);

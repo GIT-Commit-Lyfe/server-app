@@ -80,7 +80,8 @@ async function updateOneByPK(table, { id, form }) {
     },
   })
 
-  return await findOneByPK(table, { id });
+  const updatedOne = await findOneByPK(table, { id });
+  return updatedOne;
 }
 
 async function deleteOneByPK(table, { id }) {
