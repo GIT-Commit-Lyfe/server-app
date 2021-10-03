@@ -1,5 +1,4 @@
 const _ = require("lodash");
-const { sequelize } = require('../../db/sequelize');
 const Papa = require('papaparse');
 const log = require('../../utils/log')
 
@@ -44,14 +43,12 @@ module.exports = async function (req, res, next) {
       return;
     }
   
-    const seedJSON = rawJSON.map((item) => ({
+    req.seedJSON = rawJSON.map((item) => ({
       ...item,
       createdAt: new Date(),
       updatedAt: new Date()
     }));
 
-    await sequelize.queryInterface.bulkInsert(routeId + `${routeId[routeId.length-1] === "s" ? "e" : ""}s`, seedJSON);
-    log.info(`${seedJSON.length} data seeded to ${routeId}`);
     next();
   } catch(err) {
     const message = "[seeding]:internal server error";
