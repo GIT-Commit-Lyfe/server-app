@@ -2,13 +2,12 @@ const _ = require("lodash");
 const log = require("../../utils/log");
 const models = require("../../models");
 const validator = require("../../middleware/fileValidator/validator.json");
-const { findAll, findOneByPK, createOne, updateOneByPK, deleteOneByPK, deleteMultipleByPK, demigrate } = require("./controller");
-const { cmsAuthorize } = require("../auth/middleware");
-const deleteUpload = require("../../middleware/deleteUpload");
+const { findAll, findOneByPK, createOne, updateOneByPK, deleteOneByPK, deleteMultipleByPK, demigrate, audit, auditStatus, patchAuthorToModels } = require("./controller");
+const { cmsAuthorize, authenticate } = require("../auth/middleware");
 
 module.exports = {
   cms: [
-    deleteUpload,
+    ...authenticate,
     async (req, res, next) => {
       const { routeId } = req.params;
       if (!models[routeId]) {
@@ -26,6 +25,9 @@ module.exports = {
           if (id) {
             try {
               const foundOne = await findOneByPK(routeId, { id });
+              if (foundOne) {
+                await patchAuthorToModels(routeId, [foundOne]);
+              }
               const message = foundOne ? `data id:${foundOne.id} found in ${routeId} table.` : `id:${id} not found in ${routeId} table.`;
               log.info(message);
               res.status(200).json(foundOne);
@@ -40,6 +42,9 @@ module.exports = {
           }
           try {
             const foundList = await findAll(routeId);
+            if (foundList.length > 0) {
+              await patchAuthorToModels(routeId, foundList);
+            }
             const message = `${foundList.length} data found in ${routeId} table.`;
             log.info(message);
             res.status(200).json(foundList);
@@ -64,6 +69,7 @@ module.exports = {
 
           try {
             const created = await createOne(routeId, validForm);
+            await audit(req.userDetails.id, routeId, created, auditStatus.CREATED);
             const message = `data id:${created.id} added to ${routeId} table.`;
             log.info(message);
             res.status(200).json(created);
@@ -91,6 +97,9 @@ module.exports = {
           }
           try {
             const updatedOne = await updateOneByPK(routeId, { id, form });
+            if (updatedOne) {
+              await audit(req.userDetails.id, routeId, updatedOne, auditStatus.UPDATED);
+            }
             const message = updatedOne ? `data id:${updatedOne.id} updated to ${routeId} table.` : `id:${id} not found in ${routeId} table.`;
             log.info(message);
             res.status(200).json(updatedOne);
@@ -115,11 +124,15 @@ module.exports = {
 
           if (isBulkDelete) {
             try {
-              const deletedIds = await deleteMultipleByPK(routeId + `${routeId[routeId.length-1] === "s" ? "e" : ""}s`, { id });
+              const status = await deleteMultipleByPK(routeId + `${routeId[routeId.length-1] === "s" ? "e" : ""}s`, { id });
+              const ids = id.split(",");
+              ids.forEach(id => {
+                audit(req.userDetails.id, routeId, { id }, auditStatus.DELETED);
+              });
               const message = "data with these ids deleted.";
               log.info(message);
-              log.info(deletedIds);
-              res.status(200).json({ message, ids: deletedIds });
+              log.info(ids);
+              res.status(200).json({ message, ids, status });
             } catch(err) {
               const message = "[cms]:internal server error";
               log.error(message);
@@ -131,6 +144,7 @@ module.exports = {
           }
           try {
             const deletedOne = await deleteOneByPK(routeId, { id });
+            await audit(req.userDetails.id, routeId, deletedOne, auditStatus.DELETED);
             const message = deletedOne ? `data id:${deletedOne.id} deleted from ${routeId} table.` : `id:${id} not found in ${routeId} table.`;
             log.info(message);
             res.status(200).json(deletedOne);

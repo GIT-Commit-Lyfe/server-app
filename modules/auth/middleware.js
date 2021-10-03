@@ -94,8 +94,14 @@ const checkStatus = (req, res, next) => {
   next();
 }
 
+const authenticate = [
+  verifyingToken,
+  checkStatus,
+]
+
 module.exports = {
   cmsAuthorize,
   verifyingToken,
   checkStatus,
+  authenticate,
 }

@@ -2,7 +2,7 @@ const _ = require("lodash");
 const passport = require("passport");
 const cuid = require("cuid");
 const log = require("../../utils/log");
-const { cmsAuthorize, verifyingToken, checkStatus } = require("./middleware");
+const { cmsAuthorize, verifyingToken, authenticate } = require("./middleware");
 const { verifyPassword, generateToken } = require("./helpers");
 const { createAdmin, findUserByUsername, findUserByEmail, signUpUser, updateUserByEmail, changePassword } = require("./controller");
 
@@ -237,7 +237,7 @@ module.exports = {
       } catch (err) {
         if (err.name === "SequelizeValidationError") {
           const reasons = err.message.replace(/Validation error: /g, "").split("\n");
-          const message = "[cms-signup]:ValidationError";
+          const message = "[app-signup]:ValidationError";
           log.error(message);
           log.error(err);
           res.status(400).json({ message, reasons });
@@ -302,7 +302,7 @@ module.exports = {
       } catch (err) {
         if (err.name === "SequelizeValidationError") {
           const reasons = err.message.replace(/Validation error: /g, "").split("\n");
-          const message = "[cms-signup]:ValidationError";
+          const message = "[app-onboard]:ValidationError";
           log.error(message);
           log.error(err);
           res.status(400).json({ message, reasons });
@@ -317,8 +317,7 @@ module.exports = {
     }
   ],
   "verify-token": [
-    verifyingToken,
-    checkStatus,
+    ...authenticate,
     async (req, res, next) => {
       if (req.method !== "GET") {
         const message = "[verify-token]:invalid method";
@@ -415,7 +414,7 @@ module.exports = {
 
         res.status(200).json({ message: "password updated" });
       } catch (err) {
-        const message = "[cms-login]:internal server error";
+        const message = "[change-password]:internal server error";
         log.error(message);
         log.error(err.message);
         log.error(err);
@@ -456,7 +455,7 @@ module.exports = {
 
         res.status(200).json({ message: `password resetted, new password: ${newPassword}, please save it somewhere!` });
       } catch (err) {
-        const message = "[cms-login]:internal server error";
+        const message = "[reset-password]:internal server error";
         log.error(message);
         log.error(err.message);
         log.error(err);
