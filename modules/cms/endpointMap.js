@@ -146,7 +146,9 @@ module.exports = {
           }
           try {
             const deletedOne = await deleteOneByPK(routeId, { id });
-            await audit(req.userDetails.id, routeId, deletedOne, auditStatus.DELETED);
+            if (deletedOne) {
+              await audit(req.userDetails.id, routeId, deletedOne, auditStatus.DELETED);
+            }
             const message = deletedOne ? `data id:${deletedOne.id} deleted from ${routeId} table.` : `id:${id} not found in ${routeId} table.`;
             log.info(message);
             res.status(200).json(deletedOne);
