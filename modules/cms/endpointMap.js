@@ -124,11 +124,13 @@ module.exports = {
 
           if (isBulkDelete) {
             try {
-              const status = await deleteMultipleByPK(routeId + `${routeId[routeId.length-1] === "s" ? "e" : ""}s`, { id });
+              const [array, status] = await deleteMultipleByPK(routeId + `${routeId[routeId.length-1] === "s" ? "e" : ""}s`, { id });
               const ids = id.split(",");
-              ids.forEach(id => {
-                audit(req.userDetails.id, routeId, { id }, auditStatus.DELETED);
-              });
+              if (status.rowCount > 0) {
+                ids.forEach(id => {
+                  audit(req.userDetails.id, routeId, { id }, auditStatus.DELETED);
+                });
+              }
               const message = "data with these ids deleted.";
               log.info(message);
               log.info(ids);
