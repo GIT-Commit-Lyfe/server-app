@@ -11,11 +11,17 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Clasp.belongsTo(models.Brand, { foreignKey: 'BrandId' })
       Clasp.hasMany(models.WatchModel, { foreignKey: 'ClaspId' })
     }
   };
   Clasp.init({
-    name: DataTypes.STRING
+    name: DataTypes.STRING,
+    material: DataTypes.STRING,
+    partNumber: DataTypes.STRING,
+    color: DataTypes.STRING,
+    width: DataTypes.INTEGER, // mm
+    BrandId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Clasp',
