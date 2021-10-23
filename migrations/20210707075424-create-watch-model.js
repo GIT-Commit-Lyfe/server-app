@@ -59,7 +59,7 @@ module.exports = {
       MovementId: {
         type: Sequelize.INTEGER
       },
-      BezelId: {
+      BezelMaterialId: {
         type: Sequelize.INTEGER
       },
       DialMaterialId: {
