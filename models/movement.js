@@ -11,11 +11,16 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Movement.belongsTo(models.Brand, { foreignKey: 'BrandId' })
       Movement.hasMany(models.WatchModel, { foreignKey: 'MovementId' })
     }
   };
   Movement.init({
-    name: DataTypes.STRING
+    type: DataTypes.STRING,
+    caliberNumber: DataTypes.STRING,
+    numberOfJewel: DataTypes.INTEGER,
+    powerReserved: DataTypes.INTEGER,
+    BrandId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Movement',
