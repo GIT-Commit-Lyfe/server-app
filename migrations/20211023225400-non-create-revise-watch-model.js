@@ -9,6 +9,9 @@ module.exports = {
     await queryInterface.removeColumn("WatchModels", "ClaspMaterialId").catch(err => {
       log.warn(err.message);
     });
+    await queryInterface.removeColumn("WatchModels", "lugWidth").catch(err => {
+      log.warn(err.message);
+    });
     await queryInterface.addColumn("WatchModels", "BezelId", {
       allowNull: true,
       type: Sequelize.INTEGER,

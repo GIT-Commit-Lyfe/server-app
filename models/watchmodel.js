@@ -16,8 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       WatchModel.belongsTo(models.Movement, { foreignKey: 'MovementId' })
       WatchModel.belongsTo(models.Bezel, { foreignKey: 'BezelId' })
       WatchModel.belongsTo(models.DialMaterial, { foreignKey: 'DialMaterialId' })
-      WatchModel.belongsTo(models.BraceletMaterial, { foreignKey: 'BraceletMaterialId' })
-      WatchModel.belongsTo(models.BraceletColor, { foreignKey: 'BraceletColorId' })
+      WatchModel.belongsTo(models.Bracelet, { foreignKey: 'BraceletId' })
       WatchModel.belongsTo(models.Clasp, { foreignKey: 'ClaspId' })
       WatchModel.belongsTo(models.WatchFunction, { foreignKey: 'WatchFunctionId' })
       WatchModel.hasMany(models.Product, { foreignKey: 'WatchModelId' })
@@ -33,7 +32,6 @@ module.exports = (sequelize, DataTypes) => {
     waterResistance: DataTypes.INTEGER,
     glass: DataTypes.STRING,
     streetName: DataTypes.STRING,
-    lugWidth: DataTypes.STRING,
     introducedAt: DataTypes.STRING,
     powerReserved: DataTypes.INTEGER,
     numberOfJewel: DataTypes.INTEGER,
@@ -42,12 +40,10 @@ module.exports = (sequelize, DataTypes) => {
     CollectionId: DataTypes.INTEGER,
     CaliberId: DataTypes.INTEGER,
     MovementId: DataTypes.INTEGER,
-    BezelMaterialId: DataTypes.INTEGER,
+    BezelId: DataTypes.INTEGER,
     DialMaterialId: DataTypes.INTEGER,
-    BraceletMaterialId: DataTypes.INTEGER,
-    BraceletColorId: DataTypes.INTEGER,
+    BraceletId: DataTypes.INTEGER,
     ClaspId: DataTypes.INTEGER,
-    ClaspMaterialId: DataTypes.INTEGER,
     WatchFunctionId: DataTypes.INTEGER
   }, {
     sequelize,
