@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       WatchModel.belongsTo(models.Caliber, { foreignKey: 'CaliberId' })
       WatchModel.belongsTo(models.Movement, { foreignKey: 'MovementId' })
       WatchModel.belongsTo(models.Bezel, { foreignKey: 'BezelId' })
-      WatchModel.belongsTo(models.DialMaterial, { foreignKey: 'DialMaterialId' })
+      WatchModel.belongsTo(models.Dial, { foreignKey: 'DialId' })
       WatchModel.belongsTo(models.Bracelet, { foreignKey: 'BraceletId' })
       WatchModel.belongsTo(models.Clasp, { foreignKey: 'ClaspId' })
       WatchModel.belongsTo(models.WatchFunction, { foreignKey: 'WatchFunctionId' })
@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
     CaliberId: DataTypes.INTEGER,
     MovementId: DataTypes.INTEGER,
     BezelId: DataTypes.INTEGER,
-    DialMaterialId: DataTypes.INTEGER,
+    DialId: DataTypes.INTEGER,
     BraceletId: DataTypes.INTEGER,
     ClaspId: DataTypes.INTEGER,
     WatchFunctionId: DataTypes.INTEGER

@@ -18,6 +18,9 @@ module.exports = {
     await queryInterface.removeColumn("WatchModels", "BraceletColorId").catch(err => {
       log.warn(err.message);
     });
+    await queryInterface.removeColumn("WatchModels", "DialMaterialId").catch(err => {
+      log.warn(err.message);
+    });
     await queryInterface.addColumn("WatchModels", "BezelId", {
       allowNull: true,
       type: Sequelize.INTEGER,
@@ -31,6 +34,12 @@ module.exports = {
       log.warn(err.message);
     });
     await queryInterface.addColumn("WatchModels", "BraceletId", {
+      allowNull: true,
+      type: Sequelize.INTEGER,
+    }).catch(err => {
+      log.warn(err.message);
+    });
+    await queryInterface.addColumn("WatchModels", "DialId", {
       allowNull: true,
       type: Sequelize.INTEGER,
     }).catch(err => {
