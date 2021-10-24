@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     caseDiameter: DataTypes.INTEGER,
     caseThickness: DataTypes.INTEGER,
     waterResistance: DataTypes.INTEGER,
-    glass: DataTypes.STRING,
+    crystal: DataTypes.STRING,
     streetName: DataTypes.STRING,
     introducedAt: DataTypes.STRING,
     powerReserved: DataTypes.INTEGER,
