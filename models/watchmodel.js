@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     caseThickness: DataTypes.INTEGER,
     waterResistance: DataTypes.INTEGER,
     crystal: DataTypes.STRING,
-    streetName: DataTypes.STRING,
+    significantEdition: DataTypes.STRING,
     introducedAt: DataTypes.STRING,
     powerReserved: DataTypes.INTEGER,
     numberOfJewel: DataTypes.INTEGER,
