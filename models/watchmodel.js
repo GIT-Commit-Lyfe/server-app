@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
   };
   WatchModel.init({
     referenceNumber: DataTypes.STRING,
+    ticker: DataTypes.STRING,
     modelImage: DataTypes.STRING,
     caseMaterial: DataTypes.STRING,
     caseDiameter: DataTypes.INTEGER,
