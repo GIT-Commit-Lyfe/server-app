@@ -11,7 +11,8 @@ function parsedModelToObject(table, model) {
   const populatedFields = _.filter(validator[table], (item) => /Id/.test(item));
   const mappedpopulatedFields = _.map(populatedFields, (item) => item.replace(/Id/, ""));
   mappedpopulatedFields.forEach(item => {
-    parsed[item] = _.get(model, `[${item}].name`, "");
+    parsed[item] = _.get(model, `[${item}].name`, "") || _.get(model, `[${item}].type`, "");
+    // TODO: populate also for other fields
   })
   return parsed;
 }
