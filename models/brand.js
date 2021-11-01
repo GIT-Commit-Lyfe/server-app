@@ -19,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     site: DataTypes.STRING,
     description: DataTypes.STRING(2040),
-    logoImage: DataTypes.STRING
+    logoImage: DataTypes.STRING,
+    isWatch: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Brand',
