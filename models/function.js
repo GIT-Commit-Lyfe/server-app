@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      WatchFunction.hasMany(models.WatchModel, { foreignKey: 'WatchFunctionId' })
+      WatchFunction.hasMany(models.WatchFunctionModel, { foreignKey: 'WatchFunctionId' })
     }
   };
   WatchFunction.init({
