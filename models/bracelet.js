@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     partNumber: DataTypes.STRING,
     color: DataTypes.STRING,
     lugWidth: DataTypes.INTEGER, // mm
+    claspWidth: DataTypes.INTEGER, // mm
     BrandId: DataTypes.INTEGER
   }, {
     sequelize,
