@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     material: DataTypes.STRING,
     partNumber: DataTypes.STRING,
     color: DataTypes.STRING,
-    width: DataTypes.INTEGER, // mm
+    claspWidth: DataTypes.INTEGER, // mm
     BrandId: DataTypes.INTEGER
   }, {
     sequelize,
