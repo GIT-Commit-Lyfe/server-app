@@ -9,10 +9,10 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       WatchModelId: {
-        type: Sequelize.NUMBER
+        type: Sequelize.INTEGER
       },
       WatchFunctionId: {
-        type: Sequelize.NUMBER
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
