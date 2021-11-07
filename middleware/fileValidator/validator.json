@@ -1,29 +1,173 @@
 {
-  "Audit": [ "table", "data", "status", "UserId" ],
-  "Brand": [ "name", "site", "description", "logoImage" ],
-  "Collection": [ "name", "BrandId" ],
-  "Caliber": [ "name", "BrandId" ],
-  "BraceletColor": [ "name" ],
-  "Movement": [ "name" ],
-  "Clasp": [ "name" ],
-  "BezelMaterial": [ "name" ],
-  "ClaspMaterial": [ "name" ],
-  "DialMaterial": [ "name" ],
-  "BraceletMaterial": [ "name" ],
-  "WatchFunction": [ "name" ],
-  "WatchModel": [ "referenceNumber", "modelImage", "caseMaterial", "caseDiameter", "caseThickness", "waterResistance", "glass", "streetName", "lugWidth", "introducedAt", "discontinuedAt", "powerReserved", "numberOfJewel", "dialNumeral", "otherInfo", "CollectionId", "CaliberId", "MovementId", "BezelMaterialId", "DialMaterialId", "BraceletMaterialId", "BraceletColorId", "ClaspId", "ClaspMateralId", "WatchFunctionId" ],
-  "Condition": [ "name" ],
-  "Accompany": [ "name" ],
-  "ProductStatus": [ "name" ],
-  "Product": [ "year", "price", "currency", "description", "topImage", "crownSideImage", "caseBackImage", "showOffImage", "WatchModelId", "ConditionId", "AccompanyId", "BoutiqueId", "ProductStatusId", "MatchProductId" ],
-  "Boutique": [ "name", "description", "address", "fullAddress", "avatar", "longitude", "latitude" ],
-  "Role": [ "name" ],
-  "Subscription": [ "name", "value" ],
-  "UserStatus": [ "name" ],
-  "User": [ "firstName", "middleName", "lastName", "email", "username", "password", "googleConnect", "appleConnect", "facebookConnect", "mobile", "picture", "config", "RoleId", "SubscriptionId", "StatusId" ],
-  "Rating": [ "rating", "comment", "UserId" ],
-  "TransactionRating": [ "rating", "comment", "UserId", "TransactionId" ],
-  "TransactionInfo": [ "description", "TransactionId", "StatusId" ],
-  "Transaction": [ "price", "currency", "StatusId", "BuyerProductId", "SellerProductId" ],
-  "TransactionStatus": [ "name" ]
+  "Accompany": [
+    "name"
+  ],
+  "Boutique": [
+    "name",
+    "description",
+    "address",
+    "fullAddress",
+    "avatar",
+    "longitude",
+    "latitude",
+    "UserId"
+  ],
+  "Bezel": [
+    "name",
+    "material",
+    "partNumber",
+    "color",
+    "BrandId"
+  ],
+  "Brand": [
+    "name",
+    "site",
+    "description",
+    "logoImage",
+    "isWatch"
+  ],
+  "Bracelet": [
+    "name",
+    "material",
+    "partNumber",
+    "color",
+    "lugWidth",
+    "claspWidth",
+    "BrandId"
+  ],
+  "Caliber": [
+    "name",
+    "BrandId"
+  ],
+  "Audit": [
+    "table",
+    "data",
+    "status",
+    "UserId"
+  ],
+  "Collection": [
+    "name",
+    "BrandId"
+  ],
+  "Clasp": [
+    "name",
+    "material",
+    "partNumber",
+    "color",
+    "claspWidth",
+    "BrandId"
+  ],
+  "Condition": [
+    "name"
+  ],
+  "Movement": [
+    "caliberNumber",
+    "numberOfJewel",
+    "powerReserved",
+    "BrandId",
+    "MovementTypeId"
+  ],
+  "Dial": [
+    "name",
+    "partNumber",
+    "color",
+    "dialStyle",
+    "indexMaterial",
+    "BrandId"
+  ],
+  "Product": [
+    "year",
+    "price",
+    "currency",
+    "description",
+    "topImage",
+    "crownSideImage",
+    "caseBackImage",
+    "showOffImage",
+    "WatchModelId",
+    "ConditionId",
+    "AccompanyId",
+    "BoutiqueId",
+    "ProductStatusId",
+    "MatchProductId"
+  ],
+  "ProductStatus": [
+    "name"
+  ],
+  "WatchFunction": [
+    "name"
+  ],
+  "Rating": [
+    "rating",
+    "comment",
+    "UserId"
+  ],
+  "Crystal": [
+    "name"
+  ],
+  "Role": [
+    "name"
+  ],
+  "Subscription": [
+    "name",
+    "value"
+  ],
+  "Transaction": [
+    "price",
+    "currencry",
+    "StatusId",
+    "BuyerProductId",
+    "SellerProductId"
+  ],
+  "MovementType": [
+    "name"
+  ],
+  "TransactionInfo": [
+    "description",
+    "TransactionId",
+    "StatusId"
+  ],
+  "TransactionRating": [
+    "rating",
+    "comment",
+    "UserId",
+    "TransactionId"
+  ],
+  "TransactionStatus": [
+    "name"
+  ],
+  "UserStatus": [
+    "name"
+  ],
+  "WatchFunctionModel": [
+    "WatchModelId",
+    "WatchFunctionId"
+  ],
+  "UnusedFile": [
+    "url"
+  ],
+  "WatchModel": [
+    "referenceNumber",
+    "ticker",
+    "streetName",
+    "significantEdition",
+    "configuration",
+    "modelImage",
+    "caseMaterial",
+    "caseDiameter",
+    "caseThickness",
+    "waterResistance",
+    "introducedAt",
+    "discontinuedAt",
+    "lugWidth",
+    "otherInfo",
+    "CollectionId",
+    "CaliberId",
+    "MovementId",
+    "BezelId",
+    "DialId",
+    "BraceletId",
+    "ClaspId",
+    "CrystalId"
+  ]
 }
