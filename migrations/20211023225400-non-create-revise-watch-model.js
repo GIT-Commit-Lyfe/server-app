@@ -110,6 +110,13 @@ module.exports = {
     }).catch(err => {
       log.warn(err.message);
     });
+
+    await queryInterface.addColumn("WatchModels", "isFemale", {
+      allowNull: true,
+      type: Sequelize.BOOLEAN,
+    }).catch(err => {
+      log.warn(err.message);
+    });
   },
   down: async (queryInterface, Sequelize) => {
     //

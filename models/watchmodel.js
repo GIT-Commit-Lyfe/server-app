@@ -37,6 +37,7 @@ module.exports = (sequelize, DataTypes) => {
     introducedAt: DataTypes.STRING,
     discontinuedAt: DataTypes.STRING,
     lugWidth: DataTypes.STRING,
+    isFemale: DataTypes.BOOLEAN,
     otherInfo: DataTypes.STRING,
     CollectionId: DataTypes.INTEGER,
     CaliberId: DataTypes.INTEGER,

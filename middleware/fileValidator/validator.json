@@ -160,6 +160,7 @@
     "introducedAt",
     "discontinuedAt",
     "lugWidth",
+    "isFemale",
     "otherInfo",
     "CollectionId",
     "CaliberId",
