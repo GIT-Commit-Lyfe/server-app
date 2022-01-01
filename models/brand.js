@@ -20,7 +20,8 @@ module.exports = (sequelize, DataTypes) => {
     site: DataTypes.STRING,
     description: DataTypes.STRING(2040),
     logoImage: DataTypes.STRING,
-    isWatch: DataTypes.BOOLEAN
+    isWatch: DataTypes.BOOLEAN,
+    isPremium: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Brand',

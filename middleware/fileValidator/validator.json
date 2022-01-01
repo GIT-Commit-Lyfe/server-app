@@ -24,7 +24,8 @@
     "site",
     "description",
     "logoImage",
-    "isWatch"
+    "isWatch",
+    "isPremium"
   ],
   "Bracelet": [
     "name",

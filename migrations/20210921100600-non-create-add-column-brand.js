@@ -27,6 +27,12 @@ module.exports = {
     }).catch(err => {
       log.warn(err.message);
     });
+    await queryInterface.addColumn("Brands", "isPremium", {
+      allowNull: true,
+      type: Sequelize.BOOLEAN,
+    }).catch(err => {
+      log.warn(err.message);
+    });
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.removeColumn("Brands", "site").catch(err => {
@@ -39,6 +45,9 @@ module.exports = {
       log.warn(err.message);
     });
     await queryInterface.removeColumn("Brands", "isWatch").catch(err => {
+      log.warn(err.message);
+    });
+    await queryInterface.removeColumn("Brands", "isPremium").catch(err => {
       log.warn(err.message);
     });
   }
