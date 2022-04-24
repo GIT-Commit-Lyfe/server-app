@@ -157,7 +157,7 @@ module.exports = {
       const { status } = req.body;
       try {
         const newStatus = await createAuditList(status);
-        res.status(200).message({ newStatus });
+        res.status(200).json({ newStatus });
       } catch (err) {
         log.error(err);
         res.sendStatus(500);
@@ -188,7 +188,7 @@ module.exports = {
           break;
       }
 
-      res.status(200).send(success)
+      res.status(200).json(success)
     }
   ],
   "app-login": [
