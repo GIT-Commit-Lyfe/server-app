@@ -4,7 +4,7 @@ const cuid = require("cuid");
 const log = require("../../utils/log");
 const { cmsAuthorize, verifyingToken, authenticate } = require("./middleware");
 const { verifyPassword, generateToken } = require("./helpers");
-const { createAdmin, findUserByUsername, findUserByEmail, signUpUser, updateUserByEmail, changePassword } = require("./controller");
+const { createAdmin, findUserByUsername, findUserByEmail, signUpUser, updateUserByEmail, changePassword, createAuditList, AuditUserStatus } = require("./controller");
 
 module.exports = {
   "get-token": [
@@ -142,6 +142,53 @@ module.exports = {
         log.error(err);
         res.status(500).json({ message });
       }
+    }
+  ],
+  "audit-list": [
+    passport.authenticate("basic", { session: false }),
+    async (req, res, next) => {
+      if (req.method !== "POST") {
+        const message = "[audit-list]:invalid method";
+        log.warn(message);
+        res.status(405).json({ message });
+        return;
+      }
+
+      const { status } = req.body;
+      try {
+        const newStatus = await createAuditList(status);
+        res.status(200).message({ newStatus });
+      } catch (err) {
+        log.error(err);
+        res.sendStatus(500);
+      }
+    }
+  ],
+  "status": [
+    verifyingToken,
+    async (req, res, next) => {
+      if (req.method !== "POST") {
+        const message = "[status]:invalid method";
+        log.warn(message);
+        res.status(405).json({ message });
+        return;
+      }
+
+      const { status } = req.body;
+      const { id } = req.userDetails;
+      let success = false;
+      switch (status) {
+        case "online":
+          success = await AuditUserStatus.goOnline(id);
+          break;
+        case "offline":
+          success = await AuditUserStatus.goOffline(id);
+          break;
+        default:
+          break;
+      }
+
+      res.status(200).send(success)
     }
   ],
   "app-login": [
