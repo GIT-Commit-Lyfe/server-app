@@ -16,8 +16,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   UserAudit.init({
-    UserId: DataTypes.NUMBER,
-    StatusId: DataTypes.NUMBER
+    UserId: DataTypes.INTEGER,
+    StatusId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'UserAudit',
