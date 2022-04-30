@@ -124,6 +124,9 @@ module.exports = {
           await userFound.update({ passwordUpdated: false });
         }
 
+        // to update user audit status
+        await AuditUserStatus.loggedIn(userFound.id);
+
         const payload = {
           email: userFound.email,
           name: userFound.name,
@@ -161,6 +164,20 @@ module.exports = {
       } catch (err) {
         log.error(err);
         res.sendStatus(500);
+      }
+    }
+  ],
+  "cms-logout": [
+    verifyingToken,
+    async (req, res, next) => {
+      const { id } = req.userDetails;
+      // updating user audit status for logout
+      try {
+        await AuditUserStatus.loggedOut(id);
+        res.sendStatus(200);
+      } catch (err) {
+        log.error(err);
+        res.sednStatus(500);
       }
     }
   ],
