@@ -125,6 +125,10 @@ module.exports = {
         }
 
         // to update user audit status
+        const lastStatus = await AuditUserStatus.getLastStatus(userFound.id);
+        if (lastStatus === AuditStatus.ONLINE) {
+          await AuditUserStatus.goOffline(userFound.id);
+        }
         await AuditUserStatus.loggedIn(userFound.id);
 
         const payload = {
@@ -173,12 +177,29 @@ module.exports = {
       const { id } = req.userDetails;
       // updating user audit status for logout
       try {
+        await AuditUserStatus.goOffline(id);
         await AuditUserStatus.loggedOut(id);
         res.sendStatus(200);
       } catch (err) {
         log.error(err);
         res.sednStatus(500);
       }
+    }
+  ],
+  "get-status": [
+    verifyingToken,
+    async (req, res, next) => {
+      if (req.method !== "GET") {
+        const message = "[get-status]:invalid method";
+        log.warn(message);
+        res.status(405).json({ message });
+        return;
+      }
+
+      const { id } = req.userDetails;
+      const lastStatus = await AuditUserStatus.getLastStatus(id);
+      const response = lastStatus === AuditStatus.ONLINE ? true : false;
+      res.status(200).json(response)
     }
   ],
   "status": [
@@ -193,13 +214,18 @@ module.exports = {
 
       const { status } = req.body;
       const { id } = req.userDetails;
+      const lastStatus = await AuditUserStatus.getLastStatus(id);
       let success = false;
       switch (status) {
         case AuditStatus.ONLINE:
-          success = await AuditUserStatus.goOnline(id);
+          if (lastStatus === AuditStatus.OFFLINE) {
+            success = await AuditUserStatus.goOnline(id);
+          }
           break;
         case AuditStatus.OFFLINE:
-          success = await AuditUserStatus.goOffline(id);
+          if (lastStatus === AuditStatus.ONLINE) {
+            success = await AuditUserStatus.goOffline(id);
+          }
           break;
         default:
           break;
