@@ -1,4 +1,5 @@
 const _ = require("lodash");
+const { Op } = require("sequelize");
 const { User, UserAuditList, UserAudit } = require("../../models");
 const { hashPassword, evaluateRawList, AuditStatus } = require("./helpers");
 const log = require('../../utils/log');
@@ -159,6 +160,22 @@ async function getAllAuditStatus() {
   });
   return await evaluateRawList(rawList);
 }
+async function getLastStatus(userId) {
+  const found = await UserAudit.findAll({
+    where: {
+      UserId: userId,
+      StatusId: {
+        [Op.in]: [1, 2]
+      }
+    },
+    limit: 1,
+    order: [["createdAt", "desc"]],
+    include: [{ all: true }],
+  })
+  const lastStatus = _.first(found)
+  return _.get(lastStatus, "UserAuditList.name", AuditStatus.OFFLINE);
+}
+
 const AuditUserStatus = {
   goOffline(userId) {
     const payload = {
@@ -190,6 +207,9 @@ const AuditUserStatus = {
   },
   getAllStatus() {
     return getAllAuditStatus();
+  },
+  getLastStatus(userId) {
+    return getLastStatus(userId);
   }
 }
 
