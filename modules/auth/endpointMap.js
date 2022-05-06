@@ -3,8 +3,8 @@ const passport = require("passport");
 const cuid = require("cuid");
 const log = require("../../utils/log");
 const { cmsAuthorize, verifyingToken, authenticate } = require("./middleware");
-const { verifyPassword, generateToken } = require("./helpers");
-const { createAdmin, findUserByUsername, findUserByEmail, signUpUser, updateUserByEmail, changePassword } = require("./controller");
+const { verifyPassword, generateToken, AuditStatus } = require("./helpers");
+const { createAdmin, findUserByUsername, findUserByEmail, signUpUser, updateUserByEmail, changePassword, createAuditList, AuditUserStatus } = require("./controller");
 
 module.exports = {
   "get-token": [
@@ -124,6 +124,9 @@ module.exports = {
           await userFound.update({ passwordUpdated: false });
         }
 
+        // to update user audit status
+        await AuditUserStatus.loggedIn(userFound.id);
+
         const payload = {
           email: userFound.email,
           name: userFound.name,
@@ -137,6 +140,88 @@ module.exports = {
         res.status(200).json({ token });
       } catch (err) {
         const message = "[cms-login]:internal server error";
+        log.error(message);
+        log.error(err.message);
+        log.error(err);
+        res.status(500).json({ message });
+      }
+    }
+  ],
+  "audit-list": [
+    passport.authenticate("basic", { session: false }),
+    async (req, res, next) => {
+      if (req.method !== "POST") {
+        const message = "[audit-list]:invalid method";
+        log.warn(message);
+        res.status(405).json({ message });
+        return;
+      }
+
+      const { status } = req.body;
+      try {
+        const newStatus = await createAuditList(status);
+        res.status(200).json({ newStatus });
+      } catch (err) {
+        log.error(err);
+        res.sendStatus(500);
+      }
+    }
+  ],
+  "cms-logout": [
+    verifyingToken,
+    async (req, res, next) => {
+      const { id } = req.userDetails;
+      // updating user audit status for logout
+      try {
+        await AuditUserStatus.loggedOut(id);
+        res.sendStatus(200);
+      } catch (err) {
+        log.error(err);
+        res.sednStatus(500);
+      }
+    }
+  ],
+  "status": [
+    verifyingToken,
+    async (req, res, next) => {
+      if (req.method !== "POST") {
+        const message = "[status]:invalid method";
+        log.warn(message);
+        res.status(405).json({ message });
+        return;
+      }
+
+      const { status } = req.body;
+      const { id } = req.userDetails;
+      let success = false;
+      switch (status) {
+        case AuditStatus.ONLINE:
+          success = await AuditUserStatus.goOnline(id);
+          break;
+        case AuditStatus.OFFLINE:
+          success = await AuditUserStatus.goOffline(id);
+          break;
+        default:
+          break;
+      }
+
+      res.status(200).json(success)
+    }
+  ],
+  "audit-status": [
+    async (req, res, next) => {
+      if (req.method !== "GET") {
+        const message = "[audit-status]:invalid method";
+        log.warn(message);
+        res.status(405).json({ message });
+        return;
+      }
+
+      try {
+        const list = await AuditUserStatus.getAllStatus();
+        res.status(200).json(list);
+      } catch (err) {
+        const message = "[audit-status]:internal server error";
         log.error(message);
         log.error(err.message);
         log.error(err);

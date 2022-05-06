@@ -1,6 +1,7 @@
 const _ = require("lodash");
-const { User } = require("../../models");
-const { hashPassword } = require("./helpers");
+const { User, UserAuditList, UserAudit } = require("../../models");
+const { hashPassword, evaluateRawList, AuditStatus } = require("./helpers");
+const log = require('../../utils/log');
 
 async function createAdmin(payload = {}) {
   const defaultPayload = {
@@ -133,6 +134,65 @@ async function changePassword(user, newPassword) {
   return true;
 }
 
+// AUDIT STATUS
+async function createAuditList(newStatus = "newStatus") {
+  const newAuditList = await UserAuditList.create({
+    name: newStatus,
+  })
+
+  return newAuditList;
+}
+async function createAuditStatus(status, payload = {}) {
+  try {
+    await UserAudit.create(payload)
+    return true;
+  } catch (err) {
+    log.error(`[AUDIT_STATUS] Encountering error while setting to ${status}`);
+    log.error(err);
+    return false;
+  }
+}
+async function getAllAuditStatus() {
+  const rawList = await UserAudit.findAll({
+    order: [["createdAt", "desc"]],
+    include: [{ all: true }],
+  });
+  return await evaluateRawList(rawList);
+}
+const AuditUserStatus = {
+  goOffline(userId) {
+    const payload = {
+      UserId: userId,
+      StatusId: 1, // TODO: hardcoded later can use cache to store it
+    }
+    return createAuditStatus(AuditStatus.OFFLINE, payload);
+  },
+  goOnline(userId) {
+    const payload = {
+      UserId: userId,
+      StatusId: 2, // TODO: hardcoded later can use cache to store it
+    }
+    return createAuditStatus(AuditStatus.ONLINE, payload);
+  },
+  loggedIn(userId) {
+    const payload = {
+      UserId: userId,
+      StatusId: 3, // TODO: hardcoded later can use cache to store it
+    }
+    return createAuditStatus(AuditStatus.LOGIN, payload);
+  },
+  loggedOut(userId) {
+    const payload = {
+      UserId: userId,
+      StatusId: 4, // TODO: hardcoded later can use cache to store it
+    }
+    return createAuditStatus(AuditStatus.LOGOUT, payload);
+  },
+  getAllStatus() {
+    return getAllAuditStatus();
+  }
+}
+
 module.exports = {
   createAdmin,
   findUserByUsername,
@@ -140,4 +200,6 @@ module.exports = {
   signUpUser,
   updateUserByEmail,
   changePassword,
+  createAuditList,
+  AuditUserStatus,
 }

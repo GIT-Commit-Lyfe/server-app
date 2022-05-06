@@ -2,6 +2,8 @@ const bcrypt = require('bcryptjs');
 const salt = bcrypt.genSaltSync(10);
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const _ = require("lodash");
+const moment = require("moment");
 
 function hashPassword(password) {
   return bcrypt.hashSync(password, salt);
@@ -103,6 +105,59 @@ function finalDecrypt(encryption) {
   }
 }
 
+// AUDIT STATUS helpers
+const AuditStatus = {
+  ONLINE: "online",
+  OFFLINE: "offline",
+  LOGIN: "login",
+  LOGOUT: "logout"
+}
+function parseAuditStatusList(rawList) {
+  return rawList.map((item) => {
+    const clonedObj = _.pick(item, ["id", "User", "UserAuditList", "createdAt"])
+    const newObj = {
+      ...clonedObj,
+      userEmail: _.get(item, "User.email", "Unknown"),
+      userStatus: _.get(item, "UserAuditList.name", null),
+    }
+    delete newObj.User;
+    delete newObj.UserAuditList;
+    return newObj;
+  })
+}
+function evaluateRawList(rawList) {
+  const parsedList = parseAuditStatusList(rawList);
+  const rawGroupByUser = _.groupBy(parsedList, 'userEmail');
+  const groupByUser = {}
+  _.forEach(rawGroupByUser, (rawAuditList, userEmail) => {
+    let duration = 0;
+    let online = null;
+    const rawAuditListReversed = _.reverse([...rawAuditList]);
+    rawAuditListReversed.forEach((item) => {
+      if (!online && item.userStatus === AuditStatus.ONLINE) {
+        online = Object.assign({}, item);
+      }
+      if (online && item.userStatus === AuditStatus.OFFLINE) {
+        const onlineMoment = moment(online.createdAt);
+        const offlineMoment = moment(item.createdAt);
+        const diff = offlineMoment.diff(onlineMoment);
+        duration += diff;
+        online = null;
+      }
+      if (_.last(rawAuditListReversed).id === item.id && item.userStatus === AuditStatus.ONLINE) {
+        const onlineMoment = moment(online.createdAt);
+        const nowMoment = moment();
+        const diff = nowMoment.diff(onlineMoment);
+        duration += diff;
+        online = null;
+      }
+    })
+    groupByUser[userEmail] = duration;
+  })
+
+  return { totalTimeByUser: groupByUser, groupByUser: rawGroupByUser };
+}
+
 module.exports = {
   hashPassword,
   verifyPassword,
@@ -110,4 +165,6 @@ module.exports = {
   verifyToken,
   finalEncrypt,
   finalDecrypt,
+  evaluateRawList,
+  AuditStatus,
 }
