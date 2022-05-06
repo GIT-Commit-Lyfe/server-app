@@ -174,6 +174,12 @@ module.exports = {
   "cms-logout": [
     verifyingToken,
     async (req, res, next) => {
+      if (req.method !== "POST") {
+        const message = "[cms-logout]:invalid method";
+        log.warn(message);
+        res.status(405).json({ message });
+        return;
+      }
       const { id } = req.userDetails;
       // updating user audit status for logout
       try {
