@@ -3,7 +3,7 @@ const passport = require("passport");
 const cuid = require("cuid");
 const log = require("../../utils/log");
 const { cmsAuthorize, verifyingToken, authenticate } = require("./middleware");
-const { verifyPassword, generateToken } = require("./helpers");
+const { verifyPassword, generateToken, AuditStatus } = require("./helpers");
 const { createAdmin, findUserByUsername, findUserByEmail, signUpUser, updateUserByEmail, changePassword, createAuditList, AuditUserStatus } = require("./controller");
 
 module.exports = {
@@ -195,10 +195,10 @@ module.exports = {
       const { id } = req.userDetails;
       let success = false;
       switch (status) {
-        case "online":
+        case AuditStatus.ONLINE:
           success = await AuditUserStatus.goOnline(id);
           break;
-        case "offline":
+        case AuditStatus.OFFLINE:
           success = await AuditUserStatus.goOffline(id);
           break;
         default:
@@ -206,6 +206,27 @@ module.exports = {
       }
 
       res.status(200).json(success)
+    }
+  ],
+  "audit-status": [
+    async (req, res, next) => {
+      if (req.method !== "GET") {
+        const message = "[audit-status]:invalid method";
+        log.warn(message);
+        res.status(405).json({ message });
+        return;
+      }
+
+      try {
+        const list = await AuditUserStatus.getAllStatus();
+        res.status(200).json(list);
+      } catch (err) {
+        const message = "[audit-status]:internal server error";
+        log.error(message);
+        log.error(err.message);
+        log.error(err);
+        res.status(500).json({ message });
+      }
     }
   ],
   "app-login": [

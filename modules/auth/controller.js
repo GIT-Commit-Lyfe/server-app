@@ -1,6 +1,6 @@
 const _ = require("lodash");
 const { User, UserAuditList, UserAudit } = require("../../models");
-const { hashPassword } = require("./helpers");
+const { hashPassword, evaluateRawList, AuditStatus } = require("./helpers");
 const log = require('../../utils/log');
 
 async function createAdmin(payload = {}) {
@@ -152,34 +152,44 @@ async function createAuditStatus(status, payload = {}) {
     return false;
   }
 }
+async function getAllAuditStatus() {
+  const rawList = await UserAudit.findAll({
+    order: [["createdAt", "desc"]],
+    include: [{ all: true }],
+  });
+  return await evaluateRawList(rawList);
+}
 const AuditUserStatus = {
   goOffline(userId) {
     const payload = {
       UserId: userId,
       StatusId: 1, // TODO: hardcoded later can use cache to store it
     }
-    return createAuditStatus("offline", payload);
+    return createAuditStatus(AuditStatus.OFFLINE, payload);
   },
   goOnline(userId) {
     const payload = {
       UserId: userId,
       StatusId: 2, // TODO: hardcoded later can use cache to store it
     }
-    return createAuditStatus("online", payload);
+    return createAuditStatus(AuditStatus.ONLINE, payload);
   },
   loggedIn(userId) {
     const payload = {
       UserId: userId,
       StatusId: 3, // TODO: hardcoded later can use cache to store it
     }
-    return createAuditStatus("login", payload);
+    return createAuditStatus(AuditStatus.LOGIN, payload);
   },
   loggedOut(userId) {
     const payload = {
       UserId: userId,
       StatusId: 4, // TODO: hardcoded later can use cache to store it
     }
-    return createAuditStatus("logout", payload);
+    return createAuditStatus(AuditStatus.LOGOUT, payload);
+  },
+  getAllStatus() {
+    return getAllAuditStatus();
   }
 }
 
