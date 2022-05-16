@@ -155,7 +155,14 @@ function evaluateRawList(rawList) {
     groupByUser[userEmail] = duration;
   })
 
-  return { totalTimeByUser: groupByUser, groupByUser: rawGroupByUser };
+  const totalTimeByUser = [];
+  _.forEach(groupByUser, (duration, email) => {
+    totalTimeByUser.push({
+      email,
+      duration,
+    })
+  })
+  return { totalTimeByUser, groupByUser: rawGroupByUser };
 }
 
 module.exports = {
