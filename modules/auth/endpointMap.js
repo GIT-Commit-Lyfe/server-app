@@ -241,6 +241,7 @@ module.exports = {
     }
   ],
   "audit-status": [
+    ...authenticate,
     async (req, res, next) => {
       if (req.method !== "GET") {
         const message = "[audit-status]:invalid method";
